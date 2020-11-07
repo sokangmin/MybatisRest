@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd">
+
+<mapper
+        namespace="mybatis.mapper.EmsVod">
+
+<!-- vod 영상 전체(식별, 비식별포함) 리스트  -->
+    <resultMap id="SELECT_VOD_TOT_DTO"  type="HashMap">
+        <id property="ems_id" column="ems_id" />
+        <collection property="vod" javaType="ArrayList" column="ems_id" select="SELECT_VOD" />
+        <collection property="vod_deid" javaType="ArrayList" column="ems_id" select="SELECT_VOD_DEID" />
+    </resultMap>
+
+    <select id="SELECT_VOD_TOT" parameterType="string"
+            resultMap="SELECT_VOD_TOT_DTO" fetchSize="1" >
+        <![CDATA[
+			SELECT
+			        #{ems_id} as ems_id
+        ]]>
+    </select>
+
+<!-- vod 영상(식별)  리스트    -->
+    <resultMap id="SELECT_VOD_DTO"  type="HashMap">
+            <id property="url" column="url" />
+    </resultMap>
+
+    <select id="SELECT_VOD" parameterType="string"
+            resultMap="SELECT_VOD_DTO"  >
+        <![CDATA[
+			SELECT
+                    distinct concat('http://49.50.172.234:1935/ai_vod_service/mp4:', video_file, '/playlist.m3u8') as url
+            FROM 	VL_EMS_VOD_HIST
+            WHERE 	ems_id = #{ems_id}
+        ]]>
+    </select>
+
+<!-- vod 영상(비식별)  리스트    -->
+    <resultMap id="SELECT_VOD_DEID_DTO"  type="HashMap">
+        <id property="url" column="url" />
+    </resultMap>
+
+    <select id="SELECT_VOD_DEID" parameterType="string"
+            resultMap="SELECT_VOD_DEID_DTO"  >
+        <![CDATA[
+			SELECT
+                    distinct video_file as url
+            FROM 	VL_EMS_VOD_DEID_HIST
+            WHERE 	ems_id = #{ems_id}
+        ]]>
+    </select>
+
+    <insert id="INSERT_EMS_VOD_DEID_HIST" parameterType="HashMap">
+        <![CDATA[
+			INSERT
+			INTO	VL_EMS_VOD_DEID_HIST
+					(
+						ems_id,
+						video_file
+					)
+			VALUES
+					(
+						#{ems_id},
+						#{vod_url}
+					)
+		]]>
+    </insert>
+</mapper>

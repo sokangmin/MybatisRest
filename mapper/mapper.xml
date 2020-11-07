@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd">
+
+<mapper namespace="winitech">
+    <select id="selectT1" resultType="string">
+        SELECT t1
+        FROM wthrwrn
+        LIMIT 1
+    </select>
+    <select id="selectT2" resultType="string">
+        SELECT t2
+        FROM wthrwrn
+        LIMIT 1
+    </select>
+    <select id="selectT3" parameterType="map" resultType="map">
+        SELECT t3
+        FROM wthrwrn
+        WHERE stnid = #{stnid}
+        AND tmseq = #{tmseq}
+        LIMIT 1
+    </select>
+</mapper>

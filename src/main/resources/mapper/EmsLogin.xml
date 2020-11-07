@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="mybatis.mapper.EmsLogin">
+
+	<select id="SELECT_CAR_INFO" parameterType="string"
+		resultType="HashMap" fetchSize="1">
+		<![CDATA[
+			SELECT  *
+			FROM
+			(
+				SELECT	ward.ward_name,
+						car.car_id,
+						car.car_no,
+						car.car_name,
+						de.device_serial
+				FROM	IS_WARDCAR AS car
+				INNER JOIN IS_WARD AS ward ON car.ward_id = ward.ward_id
+				LEFT JOIN VL_DEVICE_INFO AS de ON car.car_id = de.car_id
+				WHERE	car.car_no = #{car_no}
+				ORDER BY de.entry_datetime DESC
+			) AS t
+			LIMIT 1
+        ]]>
+	</select>
+
+	<select id="SELECT_CAR_INFO2" parameterType="string"
+			resultType="HashMap" fetchSize="1">
+		<![CDATA[
+			SELECT  ems_id, epn_id
+			FROM
+			(
+				SELECT	distinct on (ems_id) ems_id,
+				 		epn_id ,
+				 		proc_cd
+				FROM	VL_EMS_EVENT AS vee
+				INNER JOIN IS_WARDCAR AS car ON car.car_id = vee.car_id
+				WHERE	car.car_no = #{car_no}
+				ORDER BY ems_id DESC
+				LIMIT 1
+			) AS info
+			WHERE info.proc_cd not in ('02','03')
+        ]]>
+	</select>
+
+	<select id="SELECT_DEVICE_INFO" parameterType="string"
+			resultType="HashMap" fetchSize="1">
+		<![CDATA[
+			SELECT	de.device_id
+			FROM	VL_DEVICE_INFO AS de
+			WHERE	de.device_serial = #{device_serial}
+        ]]>
+	</select>
+
+
+	<insert id="INSERT_DEVICE_INFO" parameterType="HashMap">
+		<selectKey keyProperty="device_id" resultType="string"
+				   order="BEFORE">
+			SELECT	(coalesce(max(device_id), to_char(now(), 'yyyymm')||'000000')::bigint + 1)::varchar AS device_id
+			FROM	VL_DEVICE_INFO
+			WHERE	device_id > to_char(now(), 'yyyymm')||'000000'
+		</selectKey>
+		<![CDATA[
+			INSERT
+			INTO	VL_DEVICE_INFO
+					(
+						device_id,
+						car_id,
+						device_serial,
+						entry_datetime
+					)
+			VALUES
+					(
+						#{device_id},
+						#{car_id},
+						#{device_serial},
+						to_char(now(), 'yyyymmddhh24miss')
+					)
+		]]>
+	</insert>
+
+	<update id="UPDATE_DEVICE_INFO"
+			parameterType="HashMap">
+		<![CDATA[
+		UPDATE
+		VL_DEVICE_INFO
+		SET
+		car_id = #{car_id},
+		entry_datetime = to_char(now(), 'yyyymmddhh24miss')
+		WHERE
+		device_id = #{device_id}
+		]]>
+	</update>
+
+</mapper>

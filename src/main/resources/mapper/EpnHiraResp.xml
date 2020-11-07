@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="mybatis.mapper.EpnHiraResp">
+
+	<insert id="INSERT_EPN_HIRA_RESP" parameterType="HashMap">
+		<![CDATA[
+			INSERT
+			INTO	VL_EPN_HIRA_RESP
+					(
+						ems_id,
+						hirano,
+						accept,
+						reason,
+						reasontxt,
+						date
+					)
+			VALUES
+					(
+						#{emsNo},
+						#{hiraNo},
+						#{accept},
+						#{reason},
+						#{reasonTxt},
+						to_timestamp(#{dateTime}, 'yyyymmddhh24miss')
+					)
+		]]>
+	</insert>
+
+</mapper>

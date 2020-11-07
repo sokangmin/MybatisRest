@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+        <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd">
+
+<mapper
+namespace="mybatis.mapper.EpnVod">
+
+<!-- vod 영상(영상분석)  리스트    -->
+<select id="SELECT_VOD" parameterType="string"
+        resultType="HashMap"  >
+    <![CDATA[
+			SELECT
+                    code,
+                    value,
+                    b.url,
+                    b.thumbnail
+            FROM 	VL_EMS_EVENT a
+            INNER JOIN VL_EMS_VA_HIST b ON
+                    a.ems_id = b.ems_id
+            WHERE 	a.epn_id = #{epnNo}
+        ]]>
+</select>
+</mapper>

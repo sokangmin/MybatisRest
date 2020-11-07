@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="mybatis.mapper.EmsVideo">
+
+	<insert id="INSERT_EMS_VOD_HIST" parameterType="HashMap">
+		<![CDATA[
+			INSERT
+			INTO	VL_EMS_VOD_HIST
+					(
+						ems_id,
+						camera_type,
+						camera_id,
+						video_file
+					)
+			VALUES
+					(
+						#{ems_id},
+						#{camera_type},
+						#{camera_id},
+						#{video_file}
+					)
+		]]>
+	</insert>
+
+    <insert id="INSERT_EMS_VA_HIST" parameterType="HashMap">
+        <![CDATA[
+			INSERT
+			INTO	VL_EMS_VA_HIST
+					(
+						ems_id,
+						code,
+						value,
+						url,
+						thumbnail,
+						date
+					)
+			VALUES
+					(
+						#{ems_id},
+						#{code},
+						#{value},
+						#{url},
+						#{thumbnail},
+						to_timestamp(#{dateTime}, 'yyyymmddhh24miss')
+					)
+		]]>
+    </insert>
+
+</mapper>

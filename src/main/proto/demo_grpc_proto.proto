@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package com.winitech.rnd.proto;
+option java_package = "com.winitech.rnd.proto";
+
+service Demo {
+
+    rpc Hello (DemoGrpcRequest) returns (DemoGrpcResponse);
+
+}
+
+message DemoGrpcRequest {
+
+    string message = 1;
+
+}
+
+message DemoGrpcResponse {
+    string message = 1;
+}

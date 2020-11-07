@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd">
+
+<mapper
+        namespace="mybatis.mapper.EmsIsward">
+
+<!-- 전체 본부 정보 리스트(입력파라메타가 없는 경우)  -->
+    <resultMap id="SELECT_ALL_1st_WARD_DTO"  type="HashMap">
+        <collection property="headquarters" javaType="ArrayList" column="ward_id" select="SELECT_ALL_1st_WARD_1" />
+    </resultMap>
+
+    <select id="SELECT_ALL_1st_WARD" parameterType="string"
+            resultMap="SELECT_ALL_1st_WARD_DTO" fetchSize="1" >
+        <![CDATA[
+			SELECT
+			        'all' as ward_id
+        ]]>
+    </select>
+
+<!-- 본부산하 하위정보 리스트(본부ID만 입력한 경우)    -->
+    <resultMap id="SELECT_1st_WARD_DTO"  type="HashMap">
+        <collection property="headquarters" javaType="ArrayList" column="ward_id" select="SELECT_1st_WARD_1" />
+    </resultMap>
+
+    <select id="SELECT_1st_WARD" parameterType="string"
+            resultMap="SELECT_1st_WARD_DTO" fetchSize="1" >
+        <![CDATA[
+			SELECT
+			        #{ward_id} as ward_id
+        ]]>
+    </select>
+
+<!-- 소방서산하 하위정보 리스트(소방서ID만 입력한 경우)    -->
+    <resultMap id="SELECT_2nd_WARD_DTO"  type="HashMap">
+        <collection property="stations" javaType="ArrayList" column="ward_id" select="SELECT_2nd_WARD_2" />
+    </resultMap>
+
+    <select id="SELECT_2nd_WARD" parameterType="string"
+            resultMap="SELECT_2nd_WARD_DTO" fetchSize="1" >
+        <![CDATA[
+			SELECT
+			        #{ward_id} as ward_id
+        ]]>
+    </select>
+
+<!-- 안전센터정보 리스트(안전센터ID만 입력한 경우)    -->
+    <resultMap id="SELECT_3rd_WARD_DTO"  type="HashMap">
+        <collection property="safety" javaType="ArrayList" column="ward_id" select="SELECT_3rd_WARD_2" />
+    </resultMap>
+
+    <select id="SELECT_3rd_WARD" parameterType="string"
+            resultMap="SELECT_3rd_WARD_DTO" fetchSize="1" >
+        <![CDATA[
+			SELECT
+			        #{ward_id} as ward_id
+        ]]>
+    </select>
+
+<!--  관할서,센터 조회 (000 소방본부)   -->
+    <resultMap id="SELECT_ALL_1st_WARD_1_DTO"  type="HashMap">
+            <id property="code" column="ward_id" />
+            <result property="name" column="ward_name" />
+    </resultMap>
+
+    <select id="SELECT_ALL_1st_WARD_1" parameterType="string"
+            resultMap="SELECT_ALL_1st_WARD_1_DTO"  >
+			SELECT
+                    ward_id,
+                    ward_name
+            FROM 	IS_WARD
+            WHERE 	use_yn = 'Y'
+                    AND type_cls_cd = '1420001'
+                    <if test="ward_id != 'all'">
+                    AND ward_id = #{ward_id}
+                    </if>
+            ORDER BY ward_name COLLATE "ko_KR.utf8"
+    </select>
+
+    <resultMap id="SELECT_1st_WARD_1_DTO"  type="HashMap">
+        <id property="code" column="ward_id" />
+        <result property="name" column="ward_name" />
+        <collection property="stations" javaType="ArrayList" column="ward_id" select="SELECT_2nd_WARD_1" />
+    </resultMap>
+
+    <select id="SELECT_1st_WARD_1" parameterType="string"
+            resultMap="SELECT_1st_WARD_1_DTO"  >
+        SELECT
+                ward_id,
+                ward_name
+        FROM 	IS_WARD
+        WHERE 	use_yn = 'Y'
+                AND type_cls_cd = '1420001'
+                <if test="ward_id != 'all'">
+                AND ward_id = #{ward_id}
+                </if>
+        ORDER BY ward_name COLLATE "ko_KR.utf8"
+    </select>
+
+<!--  관할서,센터 조회 (000 소방서)   -->
+    <resultMap id="SELECT_2nd_WARD_1_DTO"  type="HashMap">
+        <id property="code" column="ward_id" />
+        <result property="name" column="ward_name" />
+        <collection property="ambulances" javaType="ArrayList" column="ward_id" select="SELECT_CAR_INFO" />
+        <collection property="safety" javaType="ArrayList" column="ward_id" select="SELECT_3rd_WARD_1" />
+    </resultMap>
+
+    <select id="SELECT_2nd_WARD_1" parameterType="string"
+            resultMap="SELECT_2nd_WARD_1_DTO"  >
+        SELECT
+                ward_id,
+                ward_name
+        FROM 	IS_WARD
+        WHERE 	use_yn = 'Y'
+                <if test="ward_id != 'all'">
+                AND UPWARD_ID = #{ward_id}
+                </if>
+                AND type_cls_cd = '1373104'
+        ORDER BY ward_name COLLATE "ko_KR.utf8"
+    </select>
+
+    <resultMap id="SELECT_2nd_WARD_2_DTO"  type="HashMap">
+        <id property="code" column="ward_id" />
+        <result property="name" column="ward_name" />
+        <collection property="ambulances" javaType="ArrayList" column="ward_id" select="SELECT_CAR_INFO" />
+        <collection property="safety" javaType="ArrayList" column="ward_id" select="SELECT_3rd_WARD_1" />
+    </resultMap>
+
+    <select id="SELECT_2nd_WARD_2" parameterType="string"
+            resultMap="SELECT_2nd_WARD_2_DTO"  >
+        SELECT
+        ward_id,
+        ward_name
+        FROM 	IS_WARD
+        WHERE 	use_yn = 'Y'
+        <if test="ward_id != 'all'">
+            AND WARD_ID = #{ward_id}
+        </if>
+        AND type_cls_cd = '1373104'
+        ORDER BY ward_name COLLATE "ko_KR.utf8"
+    </select>
+
+<!--  관할서,센터 조회 (000 안전센터)   -->
+    <resultMap id="SELECT_3rd_WARD_1_DTO"  type="HashMap">
+        <id property="code" column="ward_id" />
+        <result property="name" column="ward_name" />
+        <collection property="ambulances" javaType="ArrayList" column="ward_id" select="SELECT_CAR_INFO" />
+    </resultMap>
+
+    <select id="SELECT_3rd_WARD_1" parameterType="string"
+            resultMap="SELECT_3rd_WARD_1_DTO"  >
+        SELECT
+        ward_id,
+        ward_name
+        FROM 	IS_WARD
+        WHERE 	use_yn = 'Y'
+        AND type_cls_cd = '1420006'
+        <if test="ward_id != 'all'">
+        AND D_SEOWARD_ID = #{ward_id}
+        </if>
+        ORDER BY ward_name COLLATE "ko_KR.utf8"
+    </select>
+
+    <resultMap id="SELECT_3rd_WARD_2_DTO"  type="HashMap">
+        <id property="code" column="ward_id" />
+        <result property="name" column="ward_name" />
+        <collection property="ambulances" javaType="ArrayList" column="ward_id" select="SELECT_CAR_INFO" />
+    </resultMap>
+
+    <select id="SELECT_3rd_WARD_2" parameterType="string"
+            resultMap="SELECT_3rd_WARD_2_DTO"  >
+    SELECT
+    ward_id,
+    ward_name
+    FROM 	IS_WARD
+    WHERE 	use_yn = 'Y'
+    AND type_cls_cd = '1420006'
+    <if test="ward_id != 'all'">
+        AND ward_id = #{ward_id}
+    </if>
+    ORDER BY ward_name COLLATE "ko_KR.utf8"
+    </select>
+
+<!--  차량정보조회   -->
+    <resultMap id="SELECT_CAR_INFO_DTO"  type="HashMap">
+        <id property="code" column="car_id" />
+        <result property="no" column="car_no" />
+    </resultMap>
+
+    <select id="SELECT_CAR_INFO" parameterType="string"
+            resultMap="SELECT_CAR_INFO_DTO"  >
+        SELECT
+                car_id,
+                car_no
+        FROM 	IS_WARDCAR
+        WHERE 	use_yn = 'Y'
+                AND WARD_ID = #{ward_id}
+        ORDER BY car_name COLLATE "ko_KR.utf8"
+    </select>
+</mapper>

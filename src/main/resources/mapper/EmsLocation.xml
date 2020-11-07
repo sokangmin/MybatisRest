@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="mybatis.mapper.EmsLocation">
+
+	<insert id="INSERT_EMS_LOC_HIST" parameterType="HashMap">
+		<![CDATA[
+			INSERT
+			INTO	VL_EMS_LOC_HIST
+					(
+						ems_id,
+						lat,
+						lng,
+						date,
+						alivaltime,
+						coordtype
+					)
+			VALUES
+					(
+						#{ems_id},
+						#{lat},
+						#{lng},
+						to_timestamp(#{dateTime}, 'yyyymmddhh24miss'),
+						#{alivalTime},
+						#{coordType}
+					)
+		]]>
+	</insert>
+
+</mapper>

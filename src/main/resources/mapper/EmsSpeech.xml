@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="mybatis.mapper.EmsSpeech">
+
+	<insert id="INSERT_EMS_SA_HIST" parameterType="HashMap">
+		<![CDATA[
+			INSERT
+			INTO	VL_EMS_SA_HIST
+					(
+						ems_id,
+						code,
+						value,
+						cancel,
+						speech_msg,
+						date
+					)
+			VALUES
+					(
+						#{ems_id},
+						#{code},
+						#{value},
+						#{cancel},
+						#{speech_msg},
+						to_timestamp(#{dateTime}, 'yyyymmddhh24miss')
+					)
+		]]>
+	</insert>
+
+	<insert id="INSERT_EMS_VOICEMSG_HIST" parameterType="HashMap">
+		<![CDATA[
+			INSERT
+			INTO	VL_EMS_VOICEMSG_HIST
+					(
+						ems_id,
+						voicemsg,
+						date
+					)
+			VALUES
+					(
+						#{ems_id},
+						#{voice_msg},
+						to_timestamp(#{dateTime}, 'yyyymmddhh24miss')
+					)
+		]]>
+	</insert>
+
+	<insert id="INSERT_EMS_GUIDE_HIST" parameterType="HashMap">
+		<![CDATA[
+			INSERT
+			INTO	VL_EMS_GUIDE_HIST
+					(
+						ems_id,
+						qnano,
+						question,
+						epdfound,
+						answer,
+						date
+					)
+			VALUES
+					(
+						#{ems_id},
+						#{qnaNo},
+						#{question},
+						#{epdFound},
+						#{answer},
+						to_timestamp(#{dateTime}, 'yyyymmddhh24miss')
+					)
+		]]>
+	</insert>
+</mapper>

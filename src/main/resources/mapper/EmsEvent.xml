@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="mybatis.mapper.EmsEvent">
+
+	<select id="SELECT_DEVICE_INFO" parameterType="string"
+		resultType="HashMap" fetchSize="1">
+		<![CDATA[
+			SELECT 	*
+			FROM
+			(
+				SELECT	de.device_id,
+						de.car_id,
+						car.ward_id,
+						car.car_no,
+						ward.ward_name
+				FROM	VL_DEVICE_INFO AS de,
+						IS_WARDCAR AS car,
+						IS_WARD AS ward
+				WHERE	de.car_id = car.car_id
+				  		AND car.ward_id = ward.ward_id
+						AND device_serial = #{device_serial}
+				ORDER BY entry_datetime DESC
+			) AS t
+			LIMIT 1
+        ]]>
+	</select>
+
+
+	<insert id="INSERT_EMS_EVENT" parameterType="HashMap">
+		<selectKey keyProperty="ems_id" resultType="string"
+				   order="BEFORE">
+			SELECT 	(coalesce(max(ems_id), to_char(now(), 'yyyymmddhh24')||'00000')::bigint +1)::varchar AS ems_id
+			FROM	VL_EMS_EVENT
+			WHERE	ems_id > to_char(now(), 'yyyymmddhh24')||'00000'
+		</selectKey>
+		<![CDATA[
+			INSERT
+			INTO	VL_EMS_EVENT
+					(
+						ems_id,
+						device_id,
+						ward_id,
+						car_id,
+						proc_cd,
+						stat_start_dtime,
+						dsr_seq,
+						p_camera_id,
+						d_camera_id,
+						f_camera_id
+					)
+			VALUES
+					(
+						#{ems_id},
+						#{device_id},
+						#{ward_id},
+						#{car_id},
+						#{proc_cd},
+						#{dateTime},
+						#{fireSeq},
+						#{camera1},
+						#{camera2},
+						#{camera3}
+					)
+		]]>
+	</insert>
+
+	<update id="UPDATE_EMS_EVENT"
+			parameterType="HashMap">
+		<![CDATA[
+		UPDATE
+		VL_EMS_EVENT
+		SET
+		proc_cd = #{proc_cd},
+		stat_end_dtime = #{arrDateTime},
+		epn_id = #{epn_id}
+		WHERE
+		ems_id = #{ems_id}
+		]]>
+	</update>
+
+	<insert id="INSERT_EMS_EVENT_HIST" parameterType="HashMap">
+		<![CDATA[
+			INSERT
+			INTO	VL_EMS_EVENT_HIST
+					(
+						ems_id,
+						proc_cd,
+						arrHiraNo,
+						date
+					)
+			VALUES
+					(
+						#{ems_id},
+						#{proc_cd},
+						#{arrHiraNo},
+						to_timestamp(#{dateTime}, 'yyyymmddhh24miss')
+					)
+		]]>
+	</insert>
+
+</mapper>

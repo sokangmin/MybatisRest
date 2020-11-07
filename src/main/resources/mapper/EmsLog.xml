@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="mybatis.mapper.EmsLog">
+
+	<insert id="INSERT_EMS_LOG" parameterType="HashMap">
+		<![CDATA[
+			INSERT
+			INTO	VL_EMS_LOG
+					(
+						type,
+						log
+					)
+			VALUES
+					(
+						#{type},
+						#{log}
+					)
+		]]>
+	</insert>
+
+</mapper>

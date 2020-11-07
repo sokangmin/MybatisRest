@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="mybatis.mapper.EmsId">
+
+	<select id="SELECT_EMS_ID_1" parameterType="string"
+		resultType="HashMap" fetchSize="1">
+		<![CDATA[
+			SELECT  *
+			FROM
+			(
+				SELECT	event.ems_id
+				FROM	VL_EMS_EVENT AS event
+				INNER JOIN IS_WARDCAR AS car ON event.car_id = car.car_id
+				WHERE	proc_cd not in ('02','03')
+						AND car.car_id = #{car_id}
+				ORDER BY event.ems_id DESC
+			) AS t
+			LIMIT 1
+        ]]>
+	</select>
+
+	<select id="SELECT_EMS_ID_2" parameterType="string"
+			resultType="HashMap" fetchSize="1">
+		<![CDATA[
+			SELECT  *
+			FROM
+			(
+				SELECT	event.ems_id
+				FROM	VL_EMS_EVENT AS event
+				INNER JOIN IS_WARDCAR AS car ON event.car_id = car.car_id
+				WHERE	proc_cd not in ('02','03')
+						AND car.car_no = #{car_no}
+				ORDER BY event.ems_id DESC
+			) AS t
+			LIMIT 1
+        ]]>
+	</select>
+
+</mapper>

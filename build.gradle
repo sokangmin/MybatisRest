@@ -1,0 +1,81 @@
+plugins {
+	id 'org.springframework.boot' version '2.2.7.RELEASE'
+	id 'io.spring.dependency-management' version '1.0.9.RELEASE'
+	id 'java'
+	id 'com.google.protobuf' version '0.8.10'
+}
+
+group = 'com.winitech.rnd'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '8'
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencyManagement {
+	imports {
+		mavenBom 'com.linecorp.armeria:armeria-bom:1.2.0'
+		mavenBom 'io.netty:netty-bom:4.1.50.Final'
+	}
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+	implementation 'com.linecorp.armeria:armeria-spring-boot2-webflux-starter'
+	
+	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.1.2'
+	runtimeOnly 'org.postgresql:postgresql'
+	runtimeOnly files('libs/tibero6-jdbc.jar')
+
+	implementation 'com.linecorp.armeria:armeria-grpc'
+	compileOnly 'org.projectlombok:lombok'
+	compile group: 'org.javassist', name: 'javassist', version: '3.27.0-GA'
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation('org.springframework.boot:spring-boot-starter-test') {
+		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+	}
+	testImplementation 'io.projectreactor:reactor-test'
+}
+
+test {
+	useJUnitPlatform()
+}
+
+protobuf {
+	protoc {
+		artifact = "com.google.protobuf:protoc:3.10.0"
+	}
+	plugins {
+		grpc {
+			artifact = 'io.grpc:protoc-gen-grpc-java:1.25.0'
+		}
+	}
+	generateProtoTasks {
+		all()*.plugins {
+			grpc {}
+		}
+		all().each { task ->
+			task.generateDescriptorSet = true
+			task.descriptorSetOptions.includeSourceInfo = true
+			task.descriptorSetOptions.includeImports = true
+			task.descriptorSetOptions.path =
+					"${buildDir}/resources/main/META-INF/armeria/grpc/service-name.dsc"
+		}
+	}
+}
+
+sourceSets {
+	main {
+		java {
+			srcDir 'build/generated/source/proto/main/grpc'
+			srcDir 'build/generated/source/proto/main/java'
+		}
+	}
+}
