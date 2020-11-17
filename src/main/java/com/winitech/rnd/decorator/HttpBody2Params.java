@@ -9,6 +9,7 @@ import com.linecorp.armeria.server.ServiceRequestContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.util.UriUtils;
 
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -31,7 +32,8 @@ public class HttpBody2Params implements DecoratingHttpServiceFunction {
                 String newPath;
                 Map<String, Object> map = objectMapper.readValue(body, Map.class);
                 if(map.size() > 0) {
-                    String newQuery = map.keySet().stream().map(key -> key + "=" + map.get(key)).collect(Collectors.joining("&"));
+                    // Add URI encoding
+                    String newQuery = map.keySet().stream().map(key -> key + "=" + UriUtils.encodePath(map.get(key).toString(), "UTF-8")).collect(Collectors.joining("&"));
                     String path = req.uri().getPath();
                     String oldQuery = req.uri().getQuery();
                     newPath = path + "?" + newQuery;
