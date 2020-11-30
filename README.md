@@ -1,2 +1,2 @@
 # MybatisRest
-MybatisRest는 기존 Mybatis 정보를 토대로 RESTful에 가까운 HTTP API를 제공합니다. 처음부터 작성하는 것보다 더 빠르고 편리한 API를 제공합니다.
+MyBatisREST는 사용자가 MyBatis에 정의한 SQL정보를 토대로 자동으로 RESTful에 가까운 HTTP API 서비스를 제공합니다. 처음부터 작성하는 것보다 더 빠르며, 웹화면으로 REST API 정보 및 테스트기능도 제공합니다.
