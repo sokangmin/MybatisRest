@@ -15,6 +15,7 @@
 				INNER JOIN IS_WARDCAR AS car ON event.car_id = car.car_id
 				WHERE	proc_cd not in ('02','03')
 						AND car.car_id = #{car_id}
+						AND car.use_yn = 'Y'
 				ORDER BY event.ems_id DESC
 			) AS t
 			LIMIT 1
@@ -32,6 +33,7 @@
 				INNER JOIN IS_WARDCAR AS car ON event.car_id = car.car_id
 				WHERE	proc_cd not in ('02','03')
 						AND car.car_no = #{car_no}
+						AND car.use_yn = 'Y'
 				ORDER BY event.ems_id DESC
 			) AS t
 			LIMIT 1

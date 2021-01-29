@@ -13,7 +13,7 @@
 						lat,
 						lng,
 						date,
-						alivaltime,
+						arrivaltime,
 						coordtype
 					)
 			VALUES
@@ -22,7 +22,7 @@
 						#{lat},
 						#{lng},
 						to_timestamp(#{dateTime}, 'yyyymmddhh24miss'),
-						#{alivalTime},
+						#{arrivalTime},
 						#{coordType}
 					)
 		]]>

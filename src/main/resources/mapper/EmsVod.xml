@@ -28,7 +28,7 @@
             resultMap="SELECT_VOD_DTO"  >
         <![CDATA[
 			SELECT
-                    distinct concat('http://49.50.172.234:1935/ai_vod_service/mp4:', video_file, '/playlist.m3u8') as url
+                    distinct concat('http://49.50.172.234:1935/ai_vod_service/_definst_/mp4:', video_file, '/playlist.m3u8') as url
             FROM 	VL_EMS_VOD_HIST
             WHERE 	ems_id = #{ems_id}
         ]]>

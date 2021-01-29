@@ -19,9 +19,19 @@
 				INNER JOIN IS_WARD AS ward ON car.ward_id = ward.ward_id
 				LEFT JOIN VL_DEVICE_INFO AS de ON car.car_id = de.car_id
 				WHERE	car.car_no = #{car_no}
+					AND car.use_yn = 'Y'
 				ORDER BY de.entry_datetime DESC
 			) AS t
 			LIMIT 1
+        ]]>
+	</select>
+
+	<select id="SELECT_DEVICE_INFO" parameterType="string"
+			resultType="HashMap" fetchSize="1">
+		<![CDATA[
+			SELECT	de.device_id
+			FROM	VL_DEVICE_INFO AS de
+			WHERE	de.device_serial = #{device_serial}
         ]]>
 	</select>
 
@@ -37,20 +47,60 @@
 				FROM	VL_EMS_EVENT AS vee
 				INNER JOIN IS_WARDCAR AS car ON car.car_id = vee.car_id
 				WHERE	car.car_no = #{car_no}
+					AND car.use_yn = 'Y'
 				ORDER BY ems_id DESC
 				LIMIT 1
 			) AS info
-			WHERE info.proc_cd not in ('02','03')
+			WHERE info.proc_cd not in ('02','03','04')
         ]]>
 	</select>
+	
+	<select id="SELECT_CAR_INFO3" parameterType="string"
+			resultType="HashMap">
+		<![CDATA[
+			SELECT  ems_id, 
+				epn_id, 
+				case when proc_cd = '02' then '이송종료' else '미이송' end as proc_nm, 
+				stat_start_dtime, 
+				stat_end_dtime 
+			FROM
+			(
+        			SELECT  distinct on (ems_id) ems_id,
+                        		epn_id ,
+                        		proc_cd,stat_start_dtime, stat_end_dtime 
+        			FROM    VL_EMS_EVENT AS vee
+        			INNER JOIN IS_WARDCAR AS car ON car.car_id = vee.car_id
+        			WHERE   car.car_no = #{car_no}
+                			AND car.use_yn = 'Y'
+                			and vee.stat_start_dtime > to_char(now() - '1 day'::interval, 'yyyymmddhh24miss') 
+        			ORDER BY ems_id DESC
+			) AS info
+			WHERE info.proc_cd in ('02','03')
+		]]>
+	</select>
 
-	<select id="SELECT_DEVICE_INFO" parameterType="string"
+	<select id="SELECT_EMS_and_device_INFO" parameterType="string"
 			resultType="HashMap" fetchSize="1">
 		<![CDATA[
-			SELECT	de.device_id
-			FROM	VL_DEVICE_INFO AS de
-			WHERE	de.device_serial = #{device_serial}
-        ]]>
+			SELECT  ems_id, epn_id, device_serial
+			FROM
+			(
+        			SELECT  distinct on (ems_id) ems_id,
+                        		epn_id ,
+                        		proc_cd,
+                        		vdi.device_serial
+        			FROM    VL_EMS_EVENT AS vee
+        			INNER JOIN IS_WARDCAR AS car ON car.car_id = vee.car_id
+        			INNER JOIN vl_device_info as vdi on vee.car_id = vdi.car_id 
+        			WHERE   car.car_no = #{car_no}
+                			AND car.use_yn = 'Y'
+               	 			AND vee.proc_cd = #{b_event}
+        			ORDER BY ems_id DESC
+        			LIMIT 1
+			) AS info
+
+		]]>
+
 	</select>
 
 
@@ -92,5 +142,62 @@
 		device_id = #{device_id}
 		]]>
 	</update>
+
+	<update id="UPDATE_DEVICE_INFO_CAMERA"
+			parameterType="HashMap">
+		<![CDATA[
+		UPDATE
+		VL_DEVICE_INFO
+		SET
+		p_camera_id = #{p_camera_id},
+		d_camera_id = #{d_camera_id},
+		f_camera_id = #{f_camera_id},
+		entry_datetime = to_char(now(), 'yyyymmddhh24miss')
+		WHERE
+		device_serial = #{device_serial}
+		]]>
+	</update>
+
+	<select id="SELECT_DEVICE_INFO_CAMERA" parameterType="string"
+			resultType="HashMap">
+		<![CDATA[
+		SELECT 	'patient' as type,
+			'rtsp://211.246.70.12:1935/live/'||vee.ems_id||'_'||vdi.p_camera_id as url
+			--'rtsp://211.246.70.12:1935/live/2020112712345_camera1' as url
+		FROM 	VL_DEVICE_INFO AS vdi
+		INNER JOIN VL_EMS_EVENT as vee on vee.device_id = vdi.device_id
+		WHERE 	vee.ems_id = #{ems_id}
+			and (vdi.p_camera_id !='' and vdi.p_camera_id is not null)
+		union all
+		SELECT 	'defibrillator' as type,
+			'rtsp://211.246.70.12:1935/live/'||vee.ems_id||'_'||vdi.d_camera_id as url
+			--'rtsp://211.246.70.12:1935/live/2020112712345_camera2' as url
+		FROM 	VL_DEVICE_INFO AS vdi
+		INNER JOIN VL_EMS_EVENT as vee on vee.device_id = vdi.device_id
+		WHERE 	vee.ems_id = #{ems_id}
+			and (vdi.d_camera_id !='' and vdi.d_camera_id is not null)
+		union all
+		SELECT 	'field' as type,
+			'rtsp://211.246.70.12:1935/live/'||vee.ems_id||'_'||vdi.f_camera_id as url
+			--'rtsp://211.246.70.12:1935/live/2020112712345_camera3' as url
+		FROM 	VL_DEVICE_INFO AS vdi
+		INNER JOIN VL_EMS_EVENT as vee on vee.device_id = vdi.device_id
+		WHERE 	vee.ems_id = #{ems_id}
+			and (vdi.f_camera_id !='' and vdi.f_camera_id is not null)        	
+		]]>
+	</select>
+
+	<select id="SELECT_DEVICE_SERIAL" parameterType="string"
+			resultType="HashMap" fetchSize="1">
+		<![CDATA[
+		SELECT	device_serial
+		FROM	VL_DEVICE_INFO as vdi
+		INNER JOIN IS_WARDCAR as iwc on vdi.car_id = iwc.car_id
+		WHERE 	iwc.car_no = #{car_no}
+		     	and iwc.use_yn = 'Y'
+		ORDER BY vdi.entry_datetime desc
+		LIMIT 1
+        	]]>
+	</select> 
 
 </mapper>

@@ -6,8 +6,8 @@ spring:
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/postgres
-    username: postgres
-    password: postgrespassword
+    username: ermct
+    password: ermct00
     hikari:
       maximum-pool-size: 1
 

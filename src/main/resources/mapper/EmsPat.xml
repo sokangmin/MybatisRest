@@ -327,58 +327,73 @@
 			(SELECT
 				DISTINCT ON
 				(code) code,
-				value, '0' as typ
+				value, '0' as typ,
+				cancel
 			FROM
 				(
-				SELECT
-					code, value, date
+				SELECT code, value, date, cancel
 				FROM
-					vl_ems_event a
-				INNER JOIN vl_ems_sa_hist b on
-					a.ems_id = b.ems_id
-				where
-					a.ems_id = #{ems}
-					and b.code not in ('P001061','P001023','P001025','P001026','P001028','P002016','P002021','P002034','P003018',
-						'P000085','P000086','P000087','P000088','P000089','P000090','P000091','P000092','P000093',
-						'P000094','P000095','P000096','P000097','P000098','P000099','P000100','P000064','P000166','P004017','P004018','P004019')
-					and b.cancel = 'N'
+				(
+					SELECT
+					DISTINCT ON
+								(code, value)
+						code, value, date, b.cancel, b.ems_id
+					FROM
+						vl_ems_event a
+					INNER JOIN vl_ems_sa_hist b on
+						a.ems_id = b.ems_id
+					WHERE
+						a.ems_id = #{ems}
+						and a.m_input_yn = 'N'
+						and b.code not in ('P001061','P001023','P001025','P001026','P001028','P002016','P002021','P002034','P003018','P004041'
+							'P000085','P000086','P000087','P000088','P000089','P000090','P000091','P000092','P000093',
+							'P000094','P000095','P000096','P000097','P000098','P000099','P000100','P000064','P000166','P004017','P004018','P004019','P000056',
+							'P002128')
+					ORDER BY
+						code, value, date desc
+				) t1
 			UNION ALL
 				SELECT
-					code, value, date
+					code, value, date, 'N' as cancel
 				FROM
 					vl_ems_event a
 				INNER JOIN vl_ems_va_hist b on
 					a.ems_id = b.ems_id
 				where
 					a.ems_id = #{ems}
-					and b.code not in ('P001061','P001023','P001025','P001026','P001028','P002016','P002021','P002034','P003018',
+					and a.m_input_yn = 'N'
+					and b.code not in ('P001061','P001023','P001025','P001026','P001028','P002016','P002021','P002034','P003018','P004041'
 						'P000085','P000086','P000087','P000088','P000089','P000090','P000091','P000092','P000093',
-						'P000094','P000095','P000096','P000097','P000098','P000099','P000100','P000064','P000166','P004017','P004018','P004019')
+						'P000094','P000095','P000096','P000097','P000098','P000099','P000100','P000064','P000166','P004017','P004018','P004019','P000056',
+						'P002128')
 			UNION ALL
 				SELECT
-					code, value, date
+					code, value, date, cancel
 				FROM
 					vl_ems_event a
 				INNER JOIN vl_ems_tra_hist b on
 					a.ems_id = b.ems_id
 				where
 					a.ems_id = #{ems}
-					and b.code not in ('P001061','P001023','P001025','P001026','P001028','P002016','P002021','P002034','P003018',
+					and a.m_input_yn = 'Y'
+					and b.code not in ('P001061','P001023','P001025','P001026','P001028','P002016','P002021','P002034','P003018','P004041'
 						'P000085','P000086','P000087','P000088','P000089','P000090','P000091','P000092','P000093',
-						'P000094','P000095','P000096','P000097','P000098','P000099','P000100','P000064','P000166','P004017','P004018','P004019')
-					and b.cancel = 'N'
+						'P000094','P000095','P000096','P000097','P000098','P000099','P000100','P000064','P000166','P004017','P004018','P004019','P000056',
+						'P002128')
 			UNION ALL
 				SELECT
-					code, value, date
+					code, value, date, 'N' as cancel
 				FROM
 					vl_ems_event a
 				INNER JOIN vl_ems_signal_hist b on
 					a.ems_id = b.ems_id
 				where
 					a.ems_id = #{ems}
-					and b.code not in ('P001061','P001023','P001025','P001026','P001028','P002016','P002021','P002034','P003018',
+					and a.m_input_yn = 'N'
+					and b.code not in ('P001061','P001023','P001025','P001026','P001028','P002016','P002021','P002034','P003018','P004041'
 						'P000085','P000086','P000087','P000088','P000089','P000090','P000091','P000092','P000093',
-						'P000094','P000095','P000096','P000097','P000098','P000099','P000100','P000064','P000166','P004017','P004018','P004019')) t
+						'P000094','P000095','P000096','P000097','P000098','P000099','P000100','P000064','P000166','P004017','P004018','P004019','P000056',
+						'P002128')) t
 			ORDER BY
 				code,
 				date desc)
@@ -386,7 +401,7 @@
 			(SELECT
 				DISTINCT ON
 				(code) code,
-				value, '0' as typ
+				value, '0' as typ, cancel
 			FROM
 				(
 				SELECT
@@ -401,13 +416,14 @@
 						when 'P000100' then 'P000092'
 						else code end,
 					value,
-					date
+					date, cancel
 				FROM
 					vl_ems_event a
 				INNER JOIN vl_ems_sa_hist b on
 					a.ems_id = b.ems_id
 				where
 					a.ems_id = #{ems}
+					and a.m_input_yn = 'N'
 					and b.code in ('P000085','P000086','P000087','P000088','P000089','P000090','P000091','P000092','P000093',
 						'P000094','P000095','P000096','P000097','P000098','P000099','P000100')
 					and b.cancel = 'N'
@@ -424,13 +440,14 @@
 						when 'P000100' then 'P000092'
 						else code end,
 					value,
-					date
+					date, 'N' as cancel
 				FROM
 					vl_ems_event a
 				INNER JOIN vl_ems_va_hist b on
 					a.ems_id = b.ems_id
 				where
 					a.ems_id = #{ems}
+					and a.m_input_yn = 'N'
 					and b.code in ('P000085','P000086','P000087','P000088','P000089','P000090','P000091','P000092','P000093',
 						'P000094','P000095','P000096','P000097','P000098','P000099','P000100')
 			UNION ALL
@@ -446,13 +463,14 @@
 						when 'P000100' then 'P000092'
 						else code end,
 					value,
-					date
+					date, cancel
 				FROM
 					vl_ems_event a
 				INNER JOIN vl_ems_tra_hist b on
 					a.ems_id = b.ems_id
 				where
 					a.ems_id = #{ems}
+					and a.m_input_yn = 'Y'
 					and b.code in ('P000085','P000086','P000087','P000088','P000089','P000090','P000091','P000092','P000093',
 						'P000094','P000095','P000096','P000097','P000098','P000099','P000100')
 					and b.cancel = 'N'
@@ -469,13 +487,14 @@
 						when 'P000100' then 'P000092'
 						else code end,
 					value,
-					date
+					date, 'N' as cancel
 				FROM
 					vl_ems_event a
 				INNER JOIN vl_ems_signal_hist b on
 					a.ems_id = b.ems_id
 				where
 					a.ems_id = #{ems}
+					and a.m_input_yn = 'N'
 					and b.code in ('P000085','P000086','P000087','P000088','P000089','P000090','P000091','P000092','P000093',
 						'P000094','P000095','P000096','P000097','P000098','P000099','P000100')) t
 			ORDER BY
@@ -485,7 +504,7 @@
 			(SELECT
 				DISTINCT ON
 				(code) code,
-				value, '0' as typ
+				value, '0' as typ, cancel
 			FROM
 				(
 				SELECT
@@ -500,7 +519,7 @@
 						when 'P000092' then 'P000100'
 						else b.code end,
 					value,
-					date
+					date, cancel
 				FROM
 					vl_ems_event a
 				INNER JOIN vl_ems_sa_hist b on
@@ -513,6 +532,7 @@
 					b.code = c.code
 				where
 					a.ems_id = #{ems}
+					and a.m_input_yn = 'N'
 					and b.code in ('P000085','P000086','P000087','P000088','P000089','P000090','P000091','P000092','P000093',
 						'P000094','P000095','P000096','P000097','P000098','P000099','P000100')
 					and b.cancel = 'N'
@@ -530,7 +550,7 @@
 						when 'P000092' then 'P000100'
 						else b.code end,
 					value,
-					date
+					date, 'N' as cancel
 				FROM
 					vl_ems_event a
 				INNER JOIN vl_ems_va_hist b on
@@ -543,6 +563,7 @@
 					b.code = c.code
 				where
 					a.ems_id = #{ems}
+					and a.m_input_yn = 'N'
 					and b.code in ('P000085','P000086','P000087','P000088','P000089','P000090','P000091','P000092','P000093',
 						'P000094','P000095','P000096','P000097','P000098','P000099','P000100')
 					and cnt > 1
@@ -559,7 +580,7 @@
 						when 'P000092' then 'P000100'
 						else b.code end,
 					value,
-					date
+					date, cancel
 				FROM
 					vl_ems_event a
 				INNER JOIN vl_ems_tra_hist b on
@@ -572,6 +593,7 @@
 					b.code = c.code
 				where
 					a.ems_id = #{ems}
+					and a.m_input_yn = 'Y'
 					and b.code in ('P000085','P000086','P000087','P000088','P000089','P000090','P000091','P000092','P000093',
 						'P000094','P000095','P000096','P000097','P000098','P000099','P000100')
 					and b.cancel = 'N'
@@ -589,7 +611,7 @@
 						when 'P000092' then 'P000100'
 						else b.code end,
 					value,
-					date
+					date, 'N' as cancel
 				FROM
 					vl_ems_event a
 				INNER JOIN vl_ems_signal_hist b on
@@ -602,6 +624,7 @@
 					b.code = c.code
 				where
 					a.ems_id = #{ems}
+					and a.m_input_yn = 'N'
 					and b.code in ('P000085','P000086','P000087','P000088','P000089','P000090','P000091','P000092','P000093',
 						'P000094','P000095','P000096','P000097','P000098','P000099','P000100')
 					and cnt > 1) t
@@ -609,14 +632,9 @@
 				code,
 				date desc)
 			union all
-			(select
-				code,
-				string_agg(value, ',') as value, '1' as typ
-			from (
-			SELECT
-				DISTINCT ON
-				(code, value) code,
-				value
+			(SELECT
+				'P002127' as code,
+				count(value)::TEXT as value,'0' as typ, 'N' as cancel
 			FROM
 				(
 				SELECT
@@ -627,7 +645,9 @@
 					a.ems_id = b.ems_id
 				where
 					a.ems_id = #{ems}
-					and b.code in ('P001061','P001023','P001025','P001026','P001028','P002016','P002021','P002034','P003018','P000064','P000166','P004017','P004018','P004019')
+					and a.m_input_yn = 'N'
+					and b.code = 'P002128'
+					--and b.value = 'C002079'
 					and b.cancel = 'N'
 			UNION ALL
 				SELECT
@@ -638,7 +658,9 @@
 					a.ems_id = b.ems_id
 				where
 					a.ems_id = #{ems}
-					and b.code in ('P001061','P001023','P001025','P001026','P001028','P002016','P002021','P002034','P003018','P000064','P000166','P004017','P004018','P004019')
+					and a.m_input_yn = 'N'
+					and b.code = 'P002128'
+					--and b.value = 'C002079'
 			UNION ALL
 				SELECT
 					code, value, date
@@ -648,7 +670,79 @@
 					a.ems_id = b.ems_id
 				where
 					a.ems_id = #{ems}
-					and b.code in ('P001061','P001023','P001025','P001026','P001028','P002016','P002021','P002034','P003018','P000064','P000166','P004017','P004018','P004019')
+					and a.m_input_yn = 'Y'
+					and b.code = 'P002128'
+					--and b.value = 'C002079'
+			UNION ALL
+				SELECT
+					code, value, date
+				FROM
+					vl_ems_event a
+				INNER JOIN vl_ems_signal_hist b on
+					a.ems_id = b.ems_id
+				where
+					a.ems_id = #{ems}
+					and a.m_input_yn = 'N'
+					and b.code = 'P002128'
+					--and b.value = 'C002079'
+				) t
+			GROUP BY
+				code)
+			union all
+			(select
+				code,
+				string_agg(value, ',') as value, '1' as typ, 'N' as cancel
+			from (
+			SELECT
+				DISTINCT ON
+				(code, value) code,
+				value
+			FROM
+				(
+				SELECT code, value, date
+				FROM
+				(
+					SELECT
+						DISTINCT ON
+								(code, value)
+								code, value, date, b.cancel
+					FROM
+						vl_ems_event a
+					INNER JOIN vl_ems_sa_hist b on
+						a.ems_id = b.ems_id
+					WHERE
+						a.ems_id = #{ems}
+					and a.m_input_yn = 'N'
+					and
+					b.code in ('P001061','P001023','P001025','P001026','P001028','P002016','P002021','P002034','P003018','P004041','P000064','P000166','P004017','P004018','P004019','P000056',
+					'P002128')
+					ORDER BY
+						code, value, date desc) t1
+				WHERE t1.cancel = 'N'
+			UNION ALL
+				SELECT
+					code, value, date
+				FROM
+					vl_ems_event a
+				INNER JOIN vl_ems_va_hist b on
+					a.ems_id = b.ems_id
+				where
+					a.ems_id = #{ems}
+					and a.m_input_yn = 'N'
+					and b.code in ('P001061','P001023','P001025','P001026','P001028','P002016','P002021','P002034','P003018','P004041','P000064','P000166','P004017','P004018','P004019','P000056',
+						'P002128')
+			UNION ALL
+				SELECT
+					code, value, date
+				FROM
+					vl_ems_event a
+				INNER JOIN vl_ems_tra_hist b on
+					a.ems_id = b.ems_id
+				where
+					a.ems_id = #{ems}
+					and a.m_input_yn = 'Y'
+					and b.code in ('P001061','P001023','P001025','P001026','P001028','P002016','P002021','P002034','P003018','P004041','P000064','P000166','P004017','P004018','P004019','P000056',
+						'P002128')
 					and b.cancel = 'N'
 			UNION ALL
 				SELECT
@@ -659,7 +753,9 @@
 					a.ems_id = b.ems_id
 				where
 					a.ems_id = #{ems}
-					and b.code in ('P001061','P001023','P001025','P001026','P001028','P002016','P002021','P002034','P003018','P000064','P000166','P004017','P004018','P004019')) t
+					and a.m_input_yn = 'N'
+					and b.code in ('P001061','P001023','P001025','P001026','P001028','P002016','P002021','P002034','P003018','P004041','P000064','P000166','P004017','P004018','P004019','P000056',
+						'P002128')) t
 			ORDER BY
 				code, value) t2
 			group by code)

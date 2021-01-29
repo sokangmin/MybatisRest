@@ -21,8 +21,8 @@ repositories {
 
 dependencyManagement {
 	imports {
-		mavenBom 'com.linecorp.armeria:armeria-bom:1.2.0'
-		mavenBom 'io.netty:netty-bom:4.1.50.Final'
+		mavenBom 'com.linecorp.armeria:armeria-bom:1.3.0'
+		mavenBom 'io.netty:netty-bom:4.1.54.Final'
 	}
 }
 

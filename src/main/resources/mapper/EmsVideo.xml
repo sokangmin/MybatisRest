@@ -24,8 +24,8 @@
 		]]>
 	</insert>
 
-    <insert id="INSERT_EMS_VA_HIST" parameterType="HashMap">
-        <![CDATA[
+	<insert id="INSERT_EMS_VA_HIST" parameterType="HashMap">
+        	<![CDATA[
 			INSERT
 			INTO	VL_EMS_VA_HIST
 					(
@@ -34,18 +34,24 @@
 						value,
 						url,
 						thumbnail,
-						date
+						date,
+						occ_time,
+						compl_time,
+						type
 					)
 			VALUES
 					(
 						#{ems_id},
 						#{code},
 						#{value},
-						#{url},
-						#{thumbnail},
-						to_timestamp(#{dateTime}, 'yyyymmddhh24miss')
+						#{vod_url}||'?fileKey='||encode_uri_component4(#{vod_url_key}),
+						#{vod_thumbnail}||'?fileKey='||encode_uri_component4(#{vod_thumbnail_key}),
+						to_timestamp(#{dateTime}, 'yyyymmddhh24miss'),
+						#{occ_time},
+						#{compl_time},
+						#{type}
 					)
 		]]>
-    </insert>
+    	</insert>
 
 </mapper>

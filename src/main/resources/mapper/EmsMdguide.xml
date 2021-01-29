@@ -2,26 +2,28 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd">
 
 <mapper
-	namespace="mybatis.mapper.EmsTransition">
+	namespace="mybatis.mapper.EmsMdguide">
 
-	<insert id="INSERT_EMS_TRA_HIST" parameterType="HashMap">
+	<insert id="INSERT_EMS_MDGUIDE" parameterType="HashMap">
 		<![CDATA[
 			INSERT
-			INTO	VL_EMS_TRA_HIST
+			INTO	VL_EMS_MDGUIDE
 					(
 						ems_id,
 						code,
 						value,
-						cancel,
-						date
+						date,
+						type,
+						url
 					)
 			VALUES
 					(
 						#{ems_id},
 						#{code},
 						#{value},
-						#{cancel},
-						to_timestamp(#{dateTime}, 'yyyymmddhh24miss')
+						to_timestamp(#{dateTime}, 'yyyymmddhh24miss'),
+						#{type},
+						#{url}
 					)
 		]]>
 	</insert>
