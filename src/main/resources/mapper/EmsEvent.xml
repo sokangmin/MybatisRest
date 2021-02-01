@@ -2,11 +2,11 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd">
 
 <mapper
-	namespace="mybatis.mapper.EmsEvent">
+        namespace="mybatis.mapper.EmsEvent">
 
-	<select id="SELECT_DEVICE_INFO" parameterType="string"
-		resultType="HashMap" fetchSize="1">
-		<![CDATA[
+    <select id="SELECT_DEVICE_INFO" parameterType="string"
+            resultType="HashMap" fetchSize="1">
+        <![CDATA[
 			SELECT 	*
 			FROM
 			(
@@ -26,17 +26,17 @@
 			) AS t
 			LIMIT 1
         ]]>
-	</select>
+    </select>
 
 
-	<insert id="INSERT_EMS_EVENT" parameterType="HashMap">
-		<selectKey keyProperty="ems_id" resultType="string"
-				   order="BEFORE">
-			SELECT 	(coalesce(max(ems_id), to_char(now(), 'yyyymmddhh24')||'00000')::bigint +1)::varchar AS ems_id
-			FROM	VL_EMS_EVENT
-			WHERE	ems_id > to_char(now(), 'yyyymmddhh24')||'00000'
-		</selectKey>
-		<![CDATA[
+    <insert id="INSERT_EMS_EVENT" parameterType="HashMap">
+        <selectKey keyProperty="ems_id" resultType="string"
+                   order="BEFORE">
+            SELECT 	(coalesce(max(ems_id), to_char(now(), 'yyyymmddhh24')||'00000')::bigint +1)::varchar AS ems_id
+            FROM	VL_EMS_EVENT
+            WHERE	ems_id > to_char(now(), 'yyyymmddhh24')||'00000'
+        </selectKey>
+        <![CDATA[
 			INSERT
 			INTO	VL_EMS_EVENT
 					(
@@ -65,11 +65,11 @@
 						#{camera3}
 					)
 		]]>
-	</insert>
+    </insert>
 
-	<update id="UPDATE_EMS_EVENT"
-			parameterType="HashMap">
-		<![CDATA[
+    <update id="UPDATE_EMS_EVENT"
+            parameterType="HashMap">
+        <![CDATA[
 		UPDATE
 		VL_EMS_EVENT
 		SET
@@ -79,10 +79,22 @@
 		WHERE
 		ems_id = #{ems_id}
 		]]>
-	</update>
+    </update>
 
-	<insert id="INSERT_EMS_EVENT_HIST" parameterType="HashMap">
-		<![CDATA[
+    <update id="UPDATE_EMS_M_INPUT_YN"
+            parameterType="HashMap">
+        <![CDATA[
+		UPDATE
+		VL_EMS_EVENT
+		SET
+		m_input_yn = 'Y'
+		WHERE
+		ems_id = #{ems_id}
+		]]>
+    </update>
+
+    <insert id="INSERT_EMS_EVENT_HIST" parameterType="HashMap">
+        <![CDATA[
 			INSERT
 			INTO	VL_EMS_EVENT_HIST
 					(
@@ -99,11 +111,11 @@
 						to_timestamp(#{dateTime}, 'yyyymmddhh24miss')
 					)
 		]]>
-	</insert>
+    </insert>
 
-	<select id="SELECT_FAL_GUIDE_MESSAGE" parameterType="string"
-			resultType="HashMap">
-		<![CDATA[
+    <select id="SELECT_FAL_GUIDE_MESSAGE" parameterType="string"
+            resultType="HashMap">
+        <![CDATA[
 			SELECT 	guide_message,
 					guide_order,
 					guide_activation,
@@ -111,22 +123,22 @@
 					guide_group
 			FROM 	ERMCT.GET_FAL_GUIDE_MESSAGE(#{ems_id})
         ]]>
-	</select>
+    </select>
 
-    	<select id="SELECT_FAL_GUIDE_HELP" parameterType="string"
+    <select id="SELECT_FAL_GUIDE_HELP" parameterType="string"
             resultType="HashMap">
-        	<![CDATA[
+        <![CDATA[
 		SELECT 	fa_help,
 			collected_code,
 			collected_value,
 			collected_date
 		FROM 	ERMCT.GET_FAG_GUIDE(#{ems_id})
         	]]>
-    	</select>
+    </select>
 
-	<select id="SELECT_FAL_DTL_ACT" parameterType="string"
-			resultType="HashMap" fetchSize="1">
-		<![CDATA[
+    <select id="SELECT_FAL_DTL_ACT" parameterType="string"
+            resultType="HashMap" fetchSize="1">
+        <![CDATA[
 			select	min("01002") as "01002",
 					min("01003") as "01003",
 					min("01004") as "01004",
@@ -240,7 +252,7 @@
 			) tb2
 
         ]]>
-	</select>
+    </select>
 
 
 </mapper>
