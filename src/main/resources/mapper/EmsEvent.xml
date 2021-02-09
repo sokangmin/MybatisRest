@@ -139,118 +139,177 @@
     <select id="SELECT_FAL_DTL_ACT" parameterType="string"
             resultType="HashMap" fetchSize="1">
         <![CDATA[
-			select	min("01002") as "01002",
-					min("01003") as "01003",
-					min("01004") as "01004",
-					min("01005") as "01005"
-			from(
-				select	case when act = '01002' then '1' else '2' end as "01002",
-						case when act = '01003' then '1' else '2' end as "01003",
-						case when act = '01004' then '1' else '2' end as "01004",
-						case when act = '01005' then '1' else '2' end as "01005"
-				from(
-					--심정지
-					select 	case when count(*) >0 then '01002' else '' end as act
-					from 	vl_ems_sa_hist
-					where 	ems_id = #{ems_id}
-							and code in ('P000056','P000057','P000058','P000059','P000060')
-							and value in ('C000059','C000103','C000147','C000191','C000235',
-							'C000062','C000106','C000150','C000194','C000238')
-					union all
-					-- 중증외상
-					select case when sum(cnt) > 0 then '01003' end as act
-					from(
-						select 	case when count(distinct code) >= 2 then 1 else 0 end as cnt
-						from 	vl_ems_sa_hist
-						where 	(ems_id = #{ems_id} and code = 'P000062' and value = 'C000261')
-								or (ems_id = #{ems_id} and code = 'P000067' and value = 'C000310')
-								or (ems_id = #{ems_id} and code = 'P000070' and value in ('C000323','C000324','C000325','C000326','C000327'))
-						union all
-						select 	case when sum(cnt) = 2 then 1 else 0 end as cnt
-						from (
-							select 	case when count(distinct code) = 2 then 1 else 0 end as cnt
-							from 	vl_ems_sa_hist
-							where 	(ems_id = #{ems_id} and code = 'P000062' and value = 'C000261')
-									or (ems_id = #{ems_id} and code = 'P000070' and value = 'C000320')
-							union all
-							select 	case when max(value)::numeric >= 55 then 1 else 0 end as act
-							from 	vl_ems_sa_hist
-							where 	ems_id = #{ems_id}
-									and code = 'P000040'
-									and isnumeric(value)
-						) b2
-						union all
-						select 	case when sum(cnt) = 2 then 1 else 0 end as cnt
-						from (
-							select 	case when count(distinct code) = 2 then 1 else 0 end as cnt
-							from 	vl_ems_sa_hist
-							where 	(ems_id = #{ems_id} and code = 'P000062' and value = 'C000261')
-									or (ems_id = #{ems_id} and code = 'P000070' and value in ('C000321','C000322'))
-							union all
-							select 	case when max(value)::numeric >= 55 or max(value)::numeric <= 10  then 1 else 0 end as cnt
-							from 	vl_ems_sa_hist
-							where 	ems_id = #{ems_id}
-									and code = 'P000040'
-									and isnumeric(value)
-						) b3
-					) a2
-					union all
-					-- 심혈관계
-					select 	case when sum(act) = 3 then '01004' end as act
-					from (
-					select 	case when max(value)::numeric >= 15 then 1 else 0 end as act
-					from 	vl_ems_sa_hist
-					where 	ems_id = #{ems_id}
-							and code = 'P000040'
-							and isnumeric(value)
-					union ALL
-					select 	case when count(*) > 0 then 1 else 0 end as act
-					from 	vl_ems_sa_hist
-					where 	ems_id = #{ems_id}
-							and code = 'P000062'
-							and value = 'C000260'
-					union ALL
-					select 	case when count(*) > 0 then 1 else 0 end as act
-					from 	vl_ems_sa_hist
-					where 	ems_id = #{ems_id}
-							and code in ('P000056','P000057','P000058','P000059','P000060')
-							and value in ('C000041','C000085','C000129','C000173','C000217',
-								'C000061','C000105','C000149','C000193','C000237',
-								'C000058','C000102','C000146','C000190','C000234',
-								'C000060','C000104','C000148','C000192','C000236',
-								'C000064','C000108','C000152','C000196','C000240')
-					) a3
-					union all
-					-- 뇌혈관계
-					select 	case when sum(act) = 3 then '01005' end as act
-					from (
-					select 	case when max(value)::numeric >= 15 then 1 else 0 end as act
-					from 	vl_ems_sa_hist
-					where 	ems_id = #{ems_id}
-							and code = 'P000040'
-							and isnumeric(value)
-					union ALL
-					select 	case when count(*) > 0 then 1 else 0 end as act
-					from 	vl_ems_sa_hist
-					where 	ems_id = #{ems_id}
-							and code = 'P000062'
-							and value = 'C000260'
-					union ALL
-					select 	case when count(*) > 0 then 1 else 0 end as act
-					from 	vl_ems_sa_hist
-					where 	ems_id = #{ems_id}
-							and code in ('P000056','P000057','P000058','P000059','P000060')
-							and value in ('C000040','C000084','C000128','C000172','C000216',
-								'C000078','C000122','C000166','C000210','C000254',
-								'C000055','C000099','C000143','C000187','C000231',
-								'C000063','C000107','C000151','C000195','C000239',
-								'C000064','C000108','C000152','C000196','C000240',
-								'C000079','C000123','C000167','C000211','C000255')
-					) a4
-				) tb
-				where tb notnull
-			) tb2
-
+            select	min("01002") as "01002",
+                    min("01003") as "01003",
+                    min("01004") as "01004",
+                    min("01005") as "01005"
+            from(
+                select	case when act = '01002' then '1' else '2' end as "01002",
+                        case when act = '01003' then '1' else '2' end as "01003",
+                        case when act = '01004' then '1' else '2' end as "01004",
+                        case when act = '01005' then '1' else '2' end as "01005"
+                from(
+                    --심정지
+                    select 	case when count(*) >0 then '01002' else '' end as act
+                    from (
+                        select 	distinct on (code, value) code, value, date, cancel
+                        from 	vl_ems_sa_hist
+                        where 	ems_id = #{ems_id}
+                                and code in ('P000056','P000057','P000058','P000059','P000060')
+                                and value in ('C000059','C000103','C000147','C000191','C000235',
+                                'C000062','C000106','C000150','C000194','C000238')
+                        order by code, value, date desc
+                    ) a1_1
+                    where cancel = 'N'
+                    union all
+                    -- 중증외상
+                    select case when sum(cnt) > 0 then '01003' end as act
+                    from(
+                        select 	case when count(distinct code) >= 2 then 1 else 0 end as cnt
+                        from (
+                            select 	distinct on (code, value) code, value, date, cancel
+                            from 	vl_ems_sa_hist
+                            where 	(ems_id = #{ems_id} and code = 'P000062' and value = 'C000261')
+                                    or (ems_id = #{ems_id} and code = 'P000067' and value = 'C000310')
+                                    or (ems_id = #{ems_id} and code = 'P000070' and value in ('C000323','C000324','C000325','C000326','C000327'))
+                            order by code, value, date desc
+                        ) a2_1
+                        where cancel = 'N'
+                        union all
+                        select 	case when sum(cnt) = 2 then 1 else 0 end as cnt
+                        from (
+                            select 	case when count(distinct code) = 2 then 1 else 0 end as cnt
+                            from (
+                                select 	distinct on (code, value) code, value, date, cancel
+                                from 	vl_ems_sa_hist
+                                where 	(ems_id = #{ems_id} and code = 'P000062' and value = 'C000261')
+                                        or (ems_id = #{ems_id} and code = 'P000070' and value = 'C000320')
+                                order by code, value, date desc
+                            ) a2_2
+                            where cancel = 'N'
+                            union all
+                            select 	case when max(value)::numeric >= 55 then 1 else 0 end as act
+                            from (
+                                select distinct on (code, value) code, value, date, cancel
+                                from 	vl_ems_sa_hist
+                                where 	ems_id = #{ems_id}
+                                        and code = 'P000040'
+                                        and isnumeric(value)
+                                order by code, value, date desc
+                            ) a2_3
+                            where cancel = 'N'
+                        ) b2
+                        union all
+                        select 	case when sum(cnt) = 2 then 1 else 0 end as cnt
+                        from (
+                            select 	case when count(distinct code) = 2 then 1 else 0 end as cnt
+                            from (
+                                select 	distinct on (code, value) code, value, date, cancel
+                                from 	vl_ems_sa_hist
+                                where 	(ems_id = #{ems_id} and code = 'P000062' and value = 'C000261')
+                                        or (ems_id = #{ems_id} and code = 'P000070' and value in ('C000321','C000322'))
+                                order by code, value, date desc
+                            ) a2_4
+                            where cancel = 'N'
+                            union all
+                            select 	case when max(value)::numeric >= 55 or max(value)::numeric <= 10  then 1 else 0 end as cnt
+                            from (
+                                select 	distinct on (code, value) code, value, date, cancel
+                                from 	vl_ems_sa_hist
+                                where 	ems_id = #{ems_id}
+                                        and code = 'P000040'
+                                        and isnumeric(value)
+                                order by code, value, date desc
+                            ) a2_5
+                            where cancel = '1'
+                        ) b3
+                    ) a2
+                    union all
+                    -- 심혈관계
+                    select 	case when sum(act) = 3 then '01004' end as act
+                    from (
+                        select 	case when max(value)::numeric >= 15 then 1 else 0 end as act
+                        from (
+                            select	distinct on (code, value) code, value, date, cancel
+                            from 	vl_ems_sa_hist
+                            where 	ems_id = #{ems_id}
+                                    and code = 'P000040'
+                                    and isnumeric(value)
+                            order by code, value, date desc
+                        ) a3_1
+                        where cancel = 'N'
+                        union ALL
+                        select 	case when count(*) > 0 then 1 else 0 end as act
+                        from (
+                            select 	distinct on (code, value) code, value, date, cancel
+                            from 	vl_ems_sa_hist
+                            where 	ems_id = #{ems_id}
+                                    and code = 'P000062'
+                                    and value = 'C000260'
+                            order by code, value, date desc
+                        ) a3_2
+                        where cancel = 'N'
+                        union ALL
+                        select 	case when count(*) > 0 then 1 else 0 end as act
+                        from (
+                            select 	distinct on (code, value) code, value, date, cancel
+                            from 	vl_ems_sa_hist
+                            where 	ems_id = #{ems_id}
+                                    and code in ('P000056','P000057','P000058','P000059','P000060')
+                                    and value in ('C000041','C000085','C000129','C000173','C000217',
+                                        'C000061','C000105','C000149','C000193','C000237',
+                                        'C000058','C000102','C000146','C000190','C000234',
+                                        'C000060','C000104','C000148','C000192','C000236',
+                                        'C000064','C000108','C000152','C000196','C000240')
+                            order by code, value, date desc
+                        ) a3_3
+                        where cancel = 'N'
+                    ) a3
+                    union all
+                    -- 뇌혈관계
+                    select 	case when sum(act) = 3 then '01005' end as act
+                    from (
+                        select 	case when max(value)::numeric >= 15 then 1 else 0 end as act
+                        from (
+                            select distinct on (code, value) code, value, date, cancel
+                            from 	vl_ems_sa_hist
+                            where 	ems_id = #{ems_id}
+                                    and code = 'P000040'
+                                    and isnumeric(value)
+                            order by code, value, date desc
+                        ) a4_1
+                        where cancel = 'N'
+                        union ALL
+                        select 	case when count(*) > 0 then 1 else 0 end as act
+                        from (
+                            select	distinct on (code, value) code, value, date, cancel
+                            from 	vl_ems_sa_hist
+                            where 	ems_id = #{ems_id}
+                                    and code = 'P000062'
+                                    and value = 'C000260'
+                            order by code, value, date desc
+                        ) a4_2
+                        where cancel = 'N'
+                        union ALL
+                        select 	case when count(*) > 0 then 1 else 0 end as act
+                        from (
+                            select 	distinct on (code, value) code, value, date, cancel
+                            from 	vl_ems_sa_hist
+                            where 	ems_id = #{ems_id}
+                                    and code in ('P000056','P000057','P000058','P000059','P000060')
+                                    and value in ('C000040','C000084','C000128','C000172','C000216',
+                                        'C000078','C000122','C000166','C000210','C000254',
+                                        'C000055','C000099','C000143','C000187','C000231',
+                                        'C000063','C000107','C000151','C000195','C000239',
+                                        'C000064','C000108','C000152','C000196','C000240',
+                                        'C000079','C000123','C000167','C000211','C000255')
+                            order by code, value, date desc
+                        ) a4_3
+                        where cancel = 'N'
+                    ) a4
+                ) tb
+                where tb notnull
+            ) tb2
         ]]>
     </select>
 
