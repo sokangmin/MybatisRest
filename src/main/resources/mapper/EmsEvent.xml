@@ -165,7 +165,7 @@
                     -- 중증외상
                     select case when sum(cnt) > 0 then '01003' end as act
                     from(
-                        select 	case when count(distinct code) >= 2 then 1 else 0 end as cnt
+                        select 	case when count(distinct code) >= 2 and min(code) = 'P000062' then 1 else 0 end as cnt
                         from (
                             select 	distinct on (code, value) code, value, date, cancel
                             from 	vl_ems_sa_hist

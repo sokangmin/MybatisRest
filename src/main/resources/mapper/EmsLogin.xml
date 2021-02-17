@@ -168,6 +168,7 @@
 		INNER JOIN VL_EMS_EVENT as vee on vee.device_id = vdi.device_id
 		WHERE 	vee.ems_id = #{ems_id}
 			and (vdi.p_camera_id !='' and vdi.p_camera_id is not null)
+			and vee.proc_cd not in ('02','03','04')
 		union all
 		SELECT 	'defibrillator' as type,
 			'rtsp://211.246.70.12:1935/live/'||vee.ems_id||'_'||vdi.d_camera_id as url
@@ -176,6 +177,7 @@
 		INNER JOIN VL_EMS_EVENT as vee on vee.device_id = vdi.device_id
 		WHERE 	vee.ems_id = #{ems_id}
 			and (vdi.d_camera_id !='' and vdi.d_camera_id is not null)
+			and vee.proc_cd not in ('02','03','04')
 		union all
 		SELECT 	'field' as type,
 			'rtsp://211.246.70.12:1935/live/'||vee.ems_id||'_'||vdi.f_camera_id as url
@@ -183,7 +185,8 @@
 		FROM 	VL_DEVICE_INFO AS vdi
 		INNER JOIN VL_EMS_EVENT as vee on vee.device_id = vdi.device_id
 		WHERE 	vee.ems_id = #{ems_id}
-			and (vdi.f_camera_id !='' and vdi.f_camera_id is not null)        	
+			and (vdi.f_camera_id !='' and vdi.f_camera_id is not null)
+			and vee.proc_cd not in ('02','03','04')
 		]]>
 	</select>
 
