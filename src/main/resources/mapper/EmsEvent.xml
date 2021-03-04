@@ -202,7 +202,7 @@
                         union all
                         select 	case when sum(cnt) = 2 then 1 else 0 end as cnt
                         from (
-                            select 	case when count(distinct code) = 2 then 1 else 0 end as cnt
+                            select 	case when count(distinct code) >= 2 and min(code) = 'P000062' then 1 else 0 end as cnt
                             from (
                                 select 	distinct on (code, value) code, value, date, cancel
                                 from 	vl_ems_sa_hist
@@ -297,14 +297,40 @@
                             from 	vl_ems_sa_hist
                             where 	ems_id = #{ems_id}
                                     and code in ('P000056','P000057','P000058','P000059','P000060')
-                                    and value in ('C000040','C000084','C000128','C000172','C000216',
-                                        'C000078','C000122','C000166','C000210','C000254',
+                                    and value in (
                                         'C000055','C000099','C000143','C000187','C000231',
                                         'C000063','C000107','C000151','C000195','C000239',
                                         'C000064','C000108','C000152','C000196','C000240',
                                         'C000079','C000123','C000167','C000211','C000255')
                             order by code, value, date desc
                         ) a4_3
+                        where cancel = 'N'
+                        union all
+                        select 	case when count(*) = 2 then 1 else 0 end as act
+                        from (
+                            select 	distinct on (value)  value, date, cancel
+                            from 	(
+                            	select 	case value
+										when 'C000040' then 'C000040'
+										when 'C000084' then 'C000040'
+										when 'C000128' then 'C000040'
+										when 'C000172' then 'C000040'
+										when 'C000216' then 'C000040'
+										when 'C000078' then 'C000078'
+										when 'C000122' then 'C000078'
+										when 'C000166' then 'C000078'
+										when 'C000210' then 'C000078'
+										when 'C000254' then 'C000078'
+										else value end , date, cancel
+			                    from 	vl_ems_sa_hist
+			                            where 	ems_id = #{ems_id}
+			                                    and code in ('P000056','P000057','P000058','P000059','P000060')
+			                                    and value in ('C000040','C000084','C000128','C000172','C000216',
+			                                        'C000078','C000122','C000166','C000210','C000254')
+			                                    and cancel = 'N'
+                            ) a4_4_1
+                            order by  value, date desc
+                        ) a4_4
                         where cancel = 'N'
                     ) a4
                 ) tb
