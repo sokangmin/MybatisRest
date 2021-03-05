@@ -188,7 +188,7 @@
                             ) a2_2
                             where cancel = 'N'
                             union all
-                            select 	case when max(value)::numeric >= 55 then 1 else 0 end as act
+                            select 	case when max(value::numeric)::numeric >= 55 then 1 else 0 end as act
                             from (
                                 select distinct on (code, value) code, value, date, cancel
                                 from 	vl_ems_sa_hist
@@ -212,7 +212,7 @@
                             ) a2_4
                             where cancel = 'N'
                             union all
-                            select 	case when max(value)::numeric >= 55 or max(value)::numeric <= 10  then 1 else 0 end as cnt
+                            select 	case when max(value::numeric)::numeric >= 55 or max(value::numeric)::numeric <= 10  then 1 else 0 end as cnt
                             from (
                                 select 	distinct on (code, value) code, value, date, cancel
                                 from 	vl_ems_sa_hist
@@ -228,7 +228,7 @@
                     -- 심혈관계
                     select 	case when sum(act) = 3 then '01004' end as act
                     from (
-                        select 	case when max(value)::numeric >= 15 then 1 else 0 end as act
+                        select 	case when max(value::numeric)::numeric >= 15 then 1 else 0 end as act
                         from (
                             select	distinct on (code, value) code, value, date, cancel
                             from 	vl_ems_sa_hist
@@ -269,7 +269,7 @@
                     -- 뇌혈관계
                     select 	case when sum(act) = 3 then '01005' end as act
                     from (
-                        select 	case when max(value)::numeric >= 15 then 1 else 0 end as act
+                        select 	case when max(value::numeric)::numeric >= 15 then 1 else 0 end as act
                         from (
                             select distinct on (code, value) code, value, date, cancel
                             from 	vl_ems_sa_hist
