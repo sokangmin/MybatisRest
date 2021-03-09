@@ -28,4 +28,27 @@
 		]]>
 	</insert>
 
+	<!-- 최신 단말기 위치 -->
+	<select id="SELECT_EMS_LOC_HIST" parameterType="string"
+			resultType="HashMap" fetchSize="1"  >
+		<![CDATA[
+	    SELECT 	ems_id,
+				lat,
+				lng,
+				to_char(date, 'yyyymmddhh24miss') as date,
+				coalesce(arrivaltime,'') as arrivaltime,
+				coalesce(coordtype,'wgs84') as coordtype
+		FROM 	VL_EMS_LOC_HIST vel
+		WHERE 	ems_id = #{ems_id}
+				and lat !=''
+				and lat is not null
+				and lat !='0.0'
+				and lng !=''
+				and lng is not null
+				and lng !='0.0'
+		ORDER BY date desc
+		LIMIT 1
+        ]]>
+	</select>
+
 </mapper>
