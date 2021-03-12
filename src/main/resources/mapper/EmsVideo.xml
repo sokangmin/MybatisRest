@@ -54,4 +54,32 @@
 		]]>
     	</insert>
 
+	<insert id="INSERT_EMS_SUM_VOD_HIST" parameterType="HashMap">
+		<![CDATA[
+			INSERT
+			INTO	VL_EMS_SUM_VOD_HIST
+					(
+						ems_id,
+						file_name,
+						file_seq,
+						url,
+						thumbnail,
+						date,
+						title,
+						type
+					)
+			VALUES
+					(
+						#{ems_id},
+						#{file_name},
+						#{file_seq},
+						#{vod_url}||'?fileKey='||encode_uri_component4(#{vod_url_key})||'&auth='||encode_uri_component4(#{vod_url_auth}),
+						#{vod_thumbnail}||'?fileKey='||encode_uri_component4(#{vod_thumbnail_key})||'&auth='||encode_uri_component4(#{vod_thumbnail_auth}),
+						to_timestamp(#{dateTime}, 'yyyymmddhh24miss'),
+						#{title},
+						#{type}
+					)
+		]]>
+	</insert>
+
 </mapper>

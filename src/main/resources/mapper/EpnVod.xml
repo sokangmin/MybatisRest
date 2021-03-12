@@ -22,4 +22,22 @@
             WHERE   a.epn_id = #{epnNo}
         ]]>
     </select>
+
+    <!-- 요약영상  리스트    -->
+    <select id="SELECT_SUM_VOD" parameterType="string"
+            resultType="HashMap"  >
+        <![CDATA[
+	    SELECT
+                    file_name,
+                    file_seq,
+                    url,
+                    thumbnail,
+		    title,
+		    type
+            FROM    VL_EMS_EVENT a
+            INNER JOIN VL_EMS_SUM_VOD_HIST b ON
+                    a.ems_id = b.ems_id
+            WHERE   a.epn_id = #{epnNo}
+        ]]>
+    </select>
 </mapper>

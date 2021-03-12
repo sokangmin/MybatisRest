@@ -746,18 +746,26 @@
 					and b.code in ('P001061','P001023','P001025','P001026','P001028','P002016','P002021','P002034','P003018','P004041','P000064','P000166','P004017','P004018','P004019','P000056',
 						'P002128')
 			UNION ALL
-				SELECT
-					code, value, date
+				SELECT code, value, date
 				FROM
-					vl_ems_event a
-				INNER JOIN vl_ems_tra_hist b on
-					a.ems_id = b.ems_id
-				where
-					a.ems_id = #{ems}
+				(
+					SELECT
+						DISTINCT ON
+								(code, value)
+								code, value, date, b.cancel
+					FROM
+						vl_ems_event a
+					INNER JOIN vl_ems_tra_hist b on
+						a.ems_id = b.ems_id
+					WHERE
+						a.ems_id = #{ems}
 					and a.m_input_yn = 'Y'
-					and b.code in ('P001061','P001023','P001025','P001026','P001028','P002016','P002021','P002034','P003018','P004041','P000064','P000166','P004017','P004018','P004019','P000056',
-						'P002128')
-					and b.cancel = 'N'
+					and
+					b.code in ('P001061','P001023','P001025','P001026','P001028','P002016','P002021','P002034','P003018','P004041','P000064','P000166','P004017','P004018','P004019','P000056',
+					'P002128')
+					ORDER BY
+						code, value, date desc) t1
+				WHERE t1.cancel = 'N'
 			UNION ALL
 				SELECT
 					code, value, date
