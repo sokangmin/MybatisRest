@@ -136,6 +136,18 @@
         	]]>
     </select>
 
+    <select id="SELECT_FAL_DTL_ACT2" parameterType="string"
+            resultType="HashMap" fetchSize="1">
+        <![CDATA[
+            SELECT  r01002 as "01002",
+                    r01003 as "01003",
+                    r01004 as "01004",
+                    r01005 as "01005"
+            FROM    ermct.add_particulars_actived(#{ems_id})
+
+        ]]>
+    </select>
+
     <select id="SELECT_FAL_DTL_ACT" parameterType="string"
             resultType="HashMap" fetchSize="1">
         <![CDATA[
@@ -226,7 +238,7 @@
                     ) a2
                     union all
                     -- 심혈관계
-                    select 	case when sum(act) = 3 then '01004' end as act
+                    select 	case when sum(act) >= 3 then '01004' end as act
                     from (
                         select 	case when max(value::numeric)::numeric >= 15 then 1 else 0 end as act
                         from (
@@ -267,7 +279,7 @@
                     ) a3
                     union all
                     -- 뇌혈관계
-                    select 	case when sum(act) = 3 then '01005' end as act
+                    select 	case when sum(act) >= 3 then '01005' end as act
                     from (
                         select 	case when max(value::numeric)::numeric >= 15 then 1 else 0 end as act
                         from (

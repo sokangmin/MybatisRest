@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="mybatis.mapper.EmsPclass">
+
+	<insert id="INSERT_EMS_PREDICT" parameterType="HashMap">
+		<![CDATA[
+			INSERT
+			INTO	VL_EMS_PCLASS_HIST
+					(
+						ems_id,
+						p000010,
+						p000020,
+						p000030,
+						p000040,
+						p000050,
+						p000060,
+						p000070,
+						date
+					)
+			VALUES
+					(
+						#{ems_id},
+						#{p000010},
+						#{p000020},
+						#{p000030},
+						#{p000040},
+						#{p000050},
+						#{p000060},
+						#{p000070},
+						to_timestamp(#{dateTime}, 'yyyymmddhh24miss')
+					)
+		]]>
+	</insert>
+
+</mapper>
