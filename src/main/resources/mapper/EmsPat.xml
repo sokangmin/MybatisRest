@@ -517,7 +517,7 @@
 			union all
 			(SELECT
 				DISTINCT ON
-				(code) code,
+				(code) t.code,
 				value, '0' as typ, cancel
 			FROM
 				(
@@ -538,19 +538,12 @@
 					vl_ems_event a
 				INNER JOIN vl_ems_sa_hist b on
 					a.ems_id = b.ems_id
-				INNER JOIN (select code, count(*) cnt from vl_ems_sa_hist
-					where ems_id = #{ems}
-					and code in ('P000085','P000086','P000087','P000088','P000089','P000090','P000091','P000092','P000093',
-					'P000094','P000095','P000096','P000097','P000098','P000099','P000100')
-					group by code) as c on
-					b.code = c.code
 				where
 					a.ems_id = #{ems}
 					and a.m_input_yn = 'N'
 					and b.code in ('P000085','P000086','P000087','P000088','P000089','P000090','P000091','P000092','P000093',
 						'P000094','P000095','P000096','P000097','P000098','P000099','P000100')
 					and b.cancel = 'N'
-					and cnt > 1
 			UNION ALL
 				SELECT
 					case b.code
@@ -569,18 +562,11 @@
 					vl_ems_event a
 				INNER JOIN vl_ems_va_hist b on
 					a.ems_id = b.ems_id
-				INNER JOIN (select code, count(*) cnt from vl_ems_va_hist
-					where ems_id = #{ems}
-					and code in ('P000085','P000086','P000087','P000088','P000089','P000090','P000091','P000092','P000093',
-					'P000094','P000095','P000096','P000097','P000098','P000099','P000100')
-					group by code) as c on
-					b.code = c.code
 				where
 					a.ems_id = #{ems}
 					and a.m_input_yn = 'N'
 					and b.code in ('P000085','P000086','P000087','P000088','P000089','P000090','P000091','P000092','P000093',
 						'P000094','P000095','P000096','P000097','P000098','P000099','P000100')
-					and cnt > 1
 			UNION ALL
 				SELECT
 					case b.code
@@ -599,19 +585,12 @@
 					vl_ems_event a
 				INNER JOIN vl_ems_tra_hist b on
 					a.ems_id = b.ems_id
-				INNER JOIN (select code, count(*) cnt from vl_ems_tra_hist
-					where ems_id = #{ems}
-					and code in ('P000085','P000086','P000087','P000088','P000089','P000090','P000091','P000092','P000093',
-					'P000094','P000095','P000096','P000097','P000098','P000099','P000100')
-					group by code) as c on
-					b.code = c.code
 				where
 					a.ems_id = #{ems}
 					and a.m_input_yn = 'Y'
 					and b.code in ('P000085','P000086','P000087','P000088','P000089','P000090','P000091','P000092','P000093',
 						'P000094','P000095','P000096','P000097','P000098','P000099','P000100')
 					and b.cancel = 'N'
-					and cnt > 1
 			UNION ALL
 				SELECT
 					case b.code
@@ -630,18 +609,52 @@
 					vl_ems_event a
 				INNER JOIN vl_ems_signal_hist b on
 					a.ems_id = b.ems_id
-				INNER JOIN (select code, count(*) cnt from vl_ems_signal_hist 
-					where ems_id = #{ems}
-					and code in ('P000085','P000086','P000087','P000088','P000089','P000090','P000091','P000092','P000093',
-					'P000094','P000095','P000096','P000097','P000098','P000099','P000100')
-					group by code) as c on
-					b.code = c.code
 				where
 					a.ems_id = #{ems}
 					and a.m_input_yn = 'N'
 					and b.code in ('P000085','P000086','P000087','P000088','P000089','P000090','P000091','P000092','P000093',
 						'P000094','P000095','P000096','P000097','P000098','P000099','P000100')
-					and cnt > 1) t
+			) t
+			INNER JOIN
+			(
+			SELECT
+				case code
+					when 'P000085' then 'P000093'
+					when 'P000086' then 'P000094'
+					when 'P000087' then 'P000095'
+					when 'P000088' then 'P000096'
+					when 'P000089' then 'P000097'
+					when 'P000090' then 'P000098'
+					when 'P000091' then 'P000099'
+					when 'P000092' then 'P000100'
+					else code end, count(code) as cnt
+			FROM
+			(
+					select code from vl_ems_sa_hist
+					where ems_id = #{ems}
+					and code in ('P000085','P000086','P000087','P000088','P000089','P000090','P000091','P000092','P000093',
+					'P000094','P000095','P000096','P000097','P000098','P000099','P000100')
+					group by code
+					UNION ALL
+					select code from vl_ems_va_hist
+					where ems_id = #{ems}
+					and code in ('P000085','P000086','P000087','P000088','P000089','P000090','P000091','P000092','P000093',
+					'P000094','P000095','P000096','P000097','P000098','P000099','P000100')
+					group by code
+					UNION ALL
+					select code from vl_ems_tra_hist
+					where ems_id = #{ems}
+					and code in ('P000085','P000086','P000087','P000088','P000089','P000090','P000091','P000092','P000093',
+					'P000094','P000095','P000096','P000097','P000098','P000099','P000100')
+					group by code
+					UNION ALL
+					select code from vl_ems_signal_hist
+					where ems_id = #{ems}
+					and code in ('P000085','P000086','P000087','P000088','P000089','P000090','P000091','P000092','P000093',
+					'P000094','P000095','P000096','P000097','P000098','P000099','P000100')
+				) tt
+				group by code
+			) as c on t.code = c.code where cnt > 1
 			ORDER BY
 				code,
 				date desc)
