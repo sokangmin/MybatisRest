@@ -60,7 +60,9 @@
 		<![CDATA[
 			SELECT  ems_id, 
 				epn_id, 
-				case when proc_cd = '02' then '이송종료' else '미이송' end as proc_nm, 
+				case when proc_cd = '02' then '이송종료'
+					 when proc_cd = '04' then '이송취소'
+					 else '미이송' end as proc_nm,
 				stat_start_dtime, 
 				stat_end_dtime 
 			FROM
@@ -72,10 +74,10 @@
         			INNER JOIN IS_WARDCAR AS car ON car.car_id = vee.car_id
         			WHERE   car.car_no = #{car_no}
                 			AND car.use_yn = 'Y'
-                			and vee.stat_start_dtime > to_char(now() - '1 day'::interval, 'yyyymmddhh24miss') 
+                			and vee.stat_start_dtime > to_char(now() - '1 hour'::interval, 'yyyymmddhh24miss')
         			ORDER BY ems_id DESC
 			) AS info
-			WHERE info.proc_cd in ('02','03')
+			WHERE info.proc_cd in ('02','03','04')
 		]]>
 	</select>
 

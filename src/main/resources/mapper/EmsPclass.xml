@@ -4,7 +4,7 @@
 <mapper
 	namespace="mybatis.mapper.EmsPclass">
 
-	<insert id="INSERT_EMS_PREDICT" parameterType="HashMap">
+	<insert id="INSERT_EMS_PCLASS" parameterType="HashMap">
 		<![CDATA[
 			INSERT
 			INTO	VL_EMS_PCLASS_HIST
@@ -17,6 +17,10 @@
 						p000050,
 						p000060,
 						p000070,
+						p000080,
+						p000090,
+						p000100,
+						p000110,
 						date
 					)
 			VALUES
@@ -29,6 +33,10 @@
 						#{p000050},
 						#{p000060},
 						#{p000070},
+						#{p000080},
+						#{p000090},
+						#{p000100},
+						#{p000110},
 						to_timestamp(#{dateTime}, 'yyyymmddhh24miss')
 					)
 		]]>
