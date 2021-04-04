@@ -11,10 +11,12 @@
 			FROM
 			(
 				SELECT	ward.ward_name,
+						ward.ward_id,
 						car.car_id,
 						car.car_no,
 						car.car_name,
-						de.device_serial
+						de.device_serial,
+						de.device_id
 				FROM	IS_WARDCAR AS car
 				INNER JOIN IS_WARD AS ward ON car.ward_id = ward.ward_id
 				LEFT JOIN VL_DEVICE_INFO AS de ON car.car_id = de.car_id
@@ -35,6 +37,23 @@
         ]]>
 	</select>
 
+	<select id="SELECT_DEVICE_INFO2" parameterType="string"
+			resultType="HashMap" fetchSize="1">
+		<![CDATA[
+			SELECT	de.device_id,
+					de.p_camera_id,
+					de.d_camera_id,
+					de.f_camera_id,
+					de.p_url,
+					de.d_url,
+					wowza_url
+			FROM	VL_DEVICE_INFO AS de
+			WHERE	de.device_serial = #{device_serial}
+			LIMIT 1
+        ]]>
+	</select>
+
+
 	<select id="SELECT_CAR_INFO2" parameterType="string"
 			resultType="HashMap" fetchSize="1">
 		<![CDATA[
@@ -51,7 +70,7 @@
 				ORDER BY ems_id DESC
 				LIMIT 1
 			) AS info
-			WHERE info.proc_cd not in ('02','03','04')
+			WHERE info.proc_cd not in ('00','02','03','04')
         ]]>
 	</select>
 	
@@ -79,6 +98,47 @@
 			) AS info
 			WHERE info.proc_cd in ('02','03','04')
 		]]>
+	</select>
+
+	<select id="SELECT_CAR_INFO4" parameterType="string"
+			resultType="HashMap" fetchSize="1">
+		<![CDATA[
+			SELECT  ems_id, epn_id
+			FROM
+			(
+				SELECT	distinct on (ems_id) ems_id,
+				 		epn_id ,
+				 		proc_cd
+				FROM	VL_EMS_EVENT AS vee
+				INNER JOIN IS_WARDCAR AS car ON car.car_id = vee.car_id
+				WHERE	car.car_no = #{car_no}
+					AND car.use_yn = 'Y'
+				ORDER BY ems_id DESC
+				LIMIT 1
+			) AS info
+			WHERE info.proc_cd in ('00')
+        ]]>
+	</select>
+
+	<select id="SELECT_CAR_INFO5" parameterType="string"
+			resultType="HashMap" fetchSize="1">
+		<![CDATA[
+			SELECT  ems_id, epn_id
+			FROM
+			(
+				SELECT	distinct on (ems_id) ems_id,
+				 		epn_id ,
+				 		proc_cd
+				FROM	VL_EMS_EVENT AS vee
+				INNER JOIN IS_WARDCAR AS car ON car.car_id = vee.car_id
+				WHERE	car.car_no = #{car_no}
+					AND car.use_yn = 'Y'
+					--and vee.stat_start_dtime > to_char(now() - '1 hour'::interval, 'yyyymmddhh24miss')
+				ORDER BY ems_id DESC
+				LIMIT 1
+			) AS info
+			WHERE info.proc_cd not in ('02','03','04')
+        ]]>
 	</select>
 
 	<select id="SELECT_EMS_and_device_INFO" parameterType="string"
@@ -154,6 +214,9 @@
 		p_camera_id = #{p_camera_id},
 		d_camera_id = #{d_camera_id},
 		f_camera_id = #{f_camera_id},
+		p_url = #{p_url},
+		d_url = #{d_url},
+		wowza_url = #{wowza_url},
 		entry_datetime = to_char(now(), 'yyyymmddhh24miss')
 		WHERE
 		device_serial = #{device_serial}

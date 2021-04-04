@@ -67,6 +67,52 @@
 		]]>
     </insert>
 
+    <insert id="INSERT_EMS_EVENT2" parameterType="HashMap">
+        <selectKey keyProperty="ems_id" resultType="string"
+                   order="BEFORE">
+            SELECT 	(coalesce(max(ems_id), to_char(now(), 'yyyymmddhh24')||'00000')::bigint +1)::varchar AS ems_id
+            FROM	VL_EMS_EVENT
+            WHERE	ems_id > to_char(now(), 'yyyymmddhh24')||'00000'
+        </selectKey>
+        <![CDATA[
+			INSERT
+			INTO	VL_EMS_EVENT
+					(
+						ems_id,
+						device_id,
+						ward_id,
+						car_id,
+						proc_cd,
+						dsr_seq
+					)
+			VALUES
+					(
+						#{ems_id},
+						#{device_id},
+						#{ward_id},
+						#{car_id},
+						#{proc_cd},
+						#{fireSeq}
+					)
+		]]>
+    </insert>
+
+    <update id="UPDATE_EMS_EVENT2"
+            parameterType="HashMap">
+        <![CDATA[
+		UPDATE
+		VL_EMS_EVENT
+		SET
+		proc_cd = #{proc_cd},
+		stat_start_dtime = #{dateTime},
+		p_camera_id = #{camera1},
+		d_camera_id = #{camera2},
+		f_camera_id = #{camera3}
+		WHERE
+		ems_id = #{ems_id}
+		]]>
+    </update>
+
     <update id="UPDATE_EMS_EVENT"
             parameterType="HashMap">
         <![CDATA[
