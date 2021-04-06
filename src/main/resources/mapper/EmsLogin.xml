@@ -93,7 +93,7 @@
         			INNER JOIN IS_WARDCAR AS car ON car.car_id = vee.car_id
         			WHERE   car.car_no = #{car_no}
                 			AND car.use_yn = 'Y'
-                			and vee.stat_start_dtime > to_char(now() - '1 hour'::interval, 'yyyymmddhh24miss')
+                			and vee.stat_start_dtime > to_char(now() - '3 hour'::interval, 'yyyymmddhh24miss')
         			ORDER BY ems_id DESC
 			) AS info
 			WHERE info.proc_cd in ('02','03','04')
