@@ -553,18 +553,7 @@
 						'P000094','P000095','P000096','P000097','P000098','P000099','P000100','P000128','P000130','P000137','P000139')
 			UNION ALL
 				SELECT
-					case code
-						when 'P000093' then 'P000085'
-						when 'P000094' then 'P000086'
-						when 'P000095' then 'P000087'
-						when 'P000096' then 'P000088'
-						when 'P000097' then 'P000089'
-						when 'P000098' then 'P000090'
-						when 'P000099' then 'P000091'
-						when 'P000100' then 'P000092'
-						when 'P000137' then 'P000128'
-						when 'P000139' then 'P000130'
-						else code end,
+					code,
 					value,
 					date, cancel
 				FROM
@@ -574,8 +563,7 @@
 				where
 					a.ems_id = #{ems}
 					and a.m_input_yn = 'Y'
-					and b.code in ('P000085','P000086','P000087','P000088','P000089','P000090','P000091','P000092','P000093',
-						'P000094','P000095','P000096','P000097','P000098','P000099','P000100','P000128','P000130','P000137','P000139')
+					and b.code in ('P000085','P000086','P000087','P000088','P000089','P000090','P000091','P000092','P000128','P000130')
 					and b.cancel = 'N'
 			UNION ALL
 				SELECT
@@ -677,32 +665,6 @@
 						when 'P000130' then 'P000139'
 						else b.code end,
 					value,
-					date, cancel
-				FROM
-					vl_ems_event a
-				INNER JOIN vl_ems_tra_hist b on
-					a.ems_id = b.ems_id
-				where
-					a.ems_id = #{ems}
-					and a.m_input_yn = 'Y'
-					and b.code in ('P000085','P000086','P000087','P000088','P000089','P000090','P000091','P000092','P000093',
-						'P000094','P000095','P000096','P000097','P000098','P000099','P000100','P000128','P000130','P000137','P000139')
-					and b.cancel = 'N'
-			UNION ALL
-				SELECT
-					case b.code
-						when 'P000085' then 'P000093'
-						when 'P000086' then 'P000094'
-						when 'P000087' then 'P000095'
-						when 'P000088' then 'P000096'
-						when 'P000089' then 'P000097'
-						when 'P000090' then 'P000098'
-						when 'P000091' then 'P000099'
-						when 'P000092' then 'P000100'
-						when 'P000128' then 'P000137'
-						when 'P000130' then 'P000139'
-						else b.code end,
-					value,
 					date, 'N' as cancel
 				FROM
 					vl_ems_event a
@@ -756,6 +718,21 @@
 			ORDER BY
 				code,
 				date desc)
+			UNION ALL
+				SELECT
+					b.code,
+					value,
+					'0' as typ, cancel
+				FROM
+					vl_ems_event a
+				INNER JOIN vl_ems_tra_hist b on
+					a.ems_id = b.ems_id
+				where
+					a.ems_id = #{ems}
+					and a.m_input_yn = 'Y'
+					and b.code in ('P000093',
+						'P000094','P000095','P000096','P000097','P000098','P000099','P000100','P000137','P000139')
+					and b.cancel = 'N'
 			union all
 			(SELECT
 				'P002127' as code,
