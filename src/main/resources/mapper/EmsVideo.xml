@@ -25,15 +25,18 @@
 	</insert>
 
 	<insert id="INSERT_EMS_VA_HIST" parameterType="HashMap">
-        	<![CDATA[
 			INSERT
 			INTO	VL_EMS_VA_HIST
 					(
 						ems_id,
 						code,
 						value,
-						url,
-						thumbnail,
+						<if test="vod_url != ''">
+							url,
+                    	</if>
+						<if test="vod_thumbnail != ''">
+							thumbnail,
+						</if>
 						date,
 						occ_time,
 						compl_time,
@@ -44,14 +47,18 @@
 						#{ems_id},
 						#{code},
 						#{value},
+						<if test="vod_url != ''">
 						#{vod_url}||'?fileKey='||encode_uri_component4(#{vod_url_key}),
+						</if>
+						<if test="vod_thumbnail != ''">
 						#{vod_thumbnail}||'?fileKey='||encode_uri_component4(#{vod_thumbnail_key}),
+						</if>
 						to_timestamp(#{dateTime}, 'yyyymmddhh24miss'),
 						#{occ_time},
 						#{compl_time},
 						#{type}
 					)
-		]]>
+
     	</insert>
 
 	<insert id="INSERT_EMS_SUM_VOD_HIST" parameterType="HashMap">
