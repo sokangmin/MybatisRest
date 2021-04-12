@@ -13,7 +13,7 @@
 				SELECT	id::TEXT as ver,
 						file_nm
 				FROM	APP_VER
-				ORDER BY id DESC
+				ORDER BY date DESC
 			) AS t
 			LIMIT 1
         ]]>
