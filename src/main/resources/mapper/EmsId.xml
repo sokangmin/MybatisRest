@@ -7,36 +7,36 @@
 	<select id="SELECT_EMS_ID_1" parameterType="string"
 		resultType="HashMap" fetchSize="1">
 		<![CDATA[
-			SELECT  *
+			SELECT  ems_id
 			FROM
 			(
-				SELECT	event.ems_id
+				SELECT	event.ems_id, event.proc_cd
 				FROM	VL_EMS_EVENT AS event
 				INNER JOIN IS_WARDCAR AS car ON event.car_id = car.car_id
-				WHERE	proc_cd not in ('02','03')
-						AND car.car_id = #{car_id}
+				WHERE	car.car_id = #{car_id}
 						AND car.use_yn = 'Y'
 				ORDER BY event.ems_id DESC
+				LIMIT 1
 			) AS t
-			LIMIT 1
+			WHERE t.proc_cd not in ('02','03','04')
         ]]>
 	</select>
 
 	<select id="SELECT_EMS_ID_2" parameterType="string"
 			resultType="HashMap" fetchSize="1">
 		<![CDATA[
-			SELECT  *
+			SELECT  ems_id
 			FROM
 			(
-				SELECT	event.ems_id
+				SELECT	event.ems_id, event.proc_cd
 				FROM	VL_EMS_EVENT AS event
 				INNER JOIN IS_WARDCAR AS car ON event.car_id = car.car_id
-				WHERE	proc_cd not in ('02','03')
-						AND car.car_no = #{car_no}
+				WHERE 	car.car_no = #{car_no}
 						AND car.use_yn = 'Y'
 				ORDER BY event.ems_id DESC
+				LIMIT 1
 			) AS t
-			LIMIT 1
+			WHERE t.proc_cd not in ('02','03','04')
         ]]>
 	</select>
 
