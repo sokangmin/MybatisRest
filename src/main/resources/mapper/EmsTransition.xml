@@ -26,4 +26,12 @@
 		]]>
 	</insert>
 
+	<delete id="DELETE_EMS_TRA_HIST" parameterType="HashMap">
+		<![CDATA[
+			DELETE
+			FROM 	VL_EMS_TRA_HIST
+			WHERE 	ems_id = #{ems_id}
+		]]>
+	</delete>
+
 </mapper>
