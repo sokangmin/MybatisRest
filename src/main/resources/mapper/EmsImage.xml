@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="mybatis.mapper.EmsImage">
+
+	<insert id="INSERT_EMS_IMAGE_HIST" parameterType="HashMap">
+		<![CDATA[
+			INSERT
+			INTO	VL_EMS_IMAGE_HIST
+					(
+						ems_id,
+						image_file,
+						date
+					)
+			VALUES
+					(
+						#{ems_id},
+						#{filename},
+						to_timestamp(#{collect_time}, 'yyyymmddhh24miss')
+					)
+		]]>
+	</insert>
+
+	<select id="SELECT_EMS_IMAGE_INFO" parameterType="string"
+			resultType="HashMap">
+		<![CDATA[
+			SELECT
+                    'http://49.50.173.111/epn/image/' || a.ems_id || '/' || image_file as url,
+                    to_char(date,'yyyymmddhh24miss') as collect_time
+            FROM    VL_EMS_EVENT a
+            INNER JOIN VL_EMS_IMAGE_HIST b ON
+                    a.ems_id = b.ems_id
+            WHERE   a.epn_id = #{epnNo}
+        ]]>
+	</select>
+</mapper>
