@@ -205,6 +205,18 @@
 		]]>
 	</update>
 
+	<update id="UPDATE_DEVICE_INFO_APPVER"
+			parameterType="HashMap">
+		<![CDATA[
+		UPDATE
+		VL_DEVICE_INFO
+		SET
+		app_ver = #{app_ver}
+		WHERE
+		device_serial = #{device_serial}
+		]]>
+	</update>
+
 	<update id="UPDATE_DEVICE_INFO_CAMERA"
 			parameterType="HashMap">
 		<![CDATA[
