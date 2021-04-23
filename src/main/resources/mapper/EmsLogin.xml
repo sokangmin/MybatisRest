@@ -77,13 +77,19 @@
 	<select id="SELECT_CAR_INFO3" parameterType="string"
 			resultType="HashMap">
 		<![CDATA[
-			SELECT  ems_id, 
+			SELECT distinct on (ems_id) info.ems_id,
 				epn_id, 
 				case when proc_cd = '02' then '이송종료'
 					 when proc_cd = '04' then '이송취소'
 					 else '미이송' end as proc_nm,
 				stat_start_dtime, 
-				stat_end_dtime 
+				stat_end_dtime,
+				COALESCE(r000010,'0') as "R000010",
+				COALESCE(r000020,'0') as "R000020",
+				COALESCE(r000030,'0') as "R000030",
+				COALESCE(r000031,'0') as "R000031",
+				COALESCE(r000032,'0') as "R000032",
+				COALESCE(r000040,'0') as "R000040"
 			FROM
 			(
         			SELECT  distinct on (ems_id) ems_id,
@@ -96,7 +102,9 @@
                 			and vee.stat_start_dtime > to_char(now() - '3 hour'::interval, 'yyyymmddhh24miss')
         			ORDER BY ems_id DESC
 			) AS info
+			left join vl_ems_predict_hist veph on info.ems_id = veph.ems_id
 			WHERE info.proc_cd in ('02','03','04')
+			order by ems_id desc, veph.id desc
 		]]>
 	</select>
 
