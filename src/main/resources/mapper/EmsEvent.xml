@@ -14,7 +14,8 @@
 					de.car_id,
 					car.ward_id,
 					car.car_no,
-					ward.ward_name	
+					ward.ward_name,
+					car.car_mobile
 				FROM	VL_DEVICE_INFO AS de,
 					IS_WARDCAR AS car,
 					IS_WARD AS ward
@@ -147,14 +148,16 @@
 						ems_id,
 						proc_cd,
 						arrhirano,
-						date	
+						date,
+						send_mobile_yn
 					)
 			VALUES
 					(
 						#{ems_id},
 						#{proc_cd},
 						#{arrHiraNo},
-						to_timestamp(#{dateTime}, 'yyyymmddhh24miss')
+						to_timestamp(#{dateTime}, 'yyyymmddhh24miss'),
+						#{sendMobileYn}
 					)
 		]]>
     </insert>
