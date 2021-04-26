@@ -46,6 +46,51 @@
 		]]>
 	</insert>
 
+	<select id="SELECT_EMS_VOICEMSG_HIST" parameterType="string"
+			resultType="HashMap">
+		<![CDATA[
+			SELECT  voicemsg,
+					to_char(date, 'yyyymmddhh24miss') as date
+			FROM    VL_EMS_VOICEMSG_HIST a
+			INNER JOIN VL_EMS_EVENT b ON
+					a.ems_id = b.ems_id
+			WHERE   epn_id = #{epn_id}
+			ORDER BY date asc
+        ]]>
+	</select>
+
+	<select id="SELECT_EMS_SUM_VOD_HIST" parameterType="string"
+			resultType="HashMap">
+		<![CDATA[
+			SELECT  file_name,
+					url,
+					file_seq,
+					thumbnail,
+					to_char(date, 'yyyymmddhh24miss') as date,
+					title,
+					type
+			FROM    VL_EMS_SUM_VOD_HIST a
+			INNER JOIN VL_EMS_EVENT b ON
+					a.ems_id = b.ems_id
+			WHERE   epn_id = #{epn_id}
+			ORDER BY date asc
+        ]]>
+	</select>
+
+	<resultMap id="SELECT_VOICE_SUMVOD_DTO"  type="HashMap">
+		<id property="epn" column="epn_id" />
+		<collection property="voicemsg_info" javaType="ArrayList" column="epn_id" select="SELECT_EMS_VOICEMSG_HIST" />
+		<collection property="sumvod_info" javaType="ArrayList" column="epn_id" select="SELECT_EMS_SUM_VOD_HIST" />
+	</resultMap>
+
+	<select id="SELECT_VOICE_SUMVOD_INFO" parameterType="string"
+			resultMap="SELECT_VOICE_SUMVOD_DTO" fetchSize="1" >
+		<![CDATA[
+			SELECT
+			        #{epn_id} as epn_id
+        ]]>
+	</select>
+
 	<insert id="INSERT_EMS_GUIDE_HIST" parameterType="HashMap">
 		<![CDATA[
 			INSERT
