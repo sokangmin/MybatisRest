@@ -379,6 +379,24 @@
 					code, value, date, 'N' as cancel, id
 				FROM
 					vl_ems_event a
+				INNER JOIN vl_ems_avl_hist b on
+					a.ems_id = b.ems_id
+				where
+					a.ems_id = #{ems}
+					and a.m_input_yn = 'N'
+					and b.code not in ('P001061','P001023','P001025','P001026','P001028','P002016','P002021','P002034','P003018','P004041',
+						'P000085','P000086','P000087','P000088','P000089','P000090','P000091','P000092','P000093',
+						'P000094','P000095','P000096','P000097','P000098','P000099','P000100','P000064','P000166','P004017','P004018','P004019','P000056',
+						'P000104','P000106','P000111','P000174','P000113','P000114','P000124',
+						'P002129',
+						'P000076','P000077','P000078','P000079',
+						'P000026','P000027','P000031','P000032','P000033','P000034',
+						'P002128','P004003','P001047','P001060','P001064','P001067','P000128','P000130','P000137','P000139')
+			UNION ALL
+				SELECT
+					code, value, date, 'N' as cancel, id
+				FROM
+					vl_ems_event a
 				INNER JOIN vl_ems_mdguide b on
 					a.ems_id = b.ems_id
 				where
