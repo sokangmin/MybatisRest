@@ -31,16 +31,15 @@
 	<select id="SELECT_EMS_DTL_ACT" parameterType="string"
 			resultType="HashMap" fetchSize="1">
 		<![CDATA[
-            SELECT  distinct ON (ems_id)
-                    ems_id as ems,
-                    to_char(date, 'yyyymmddhh24miss') as dateTime,
+            SELECT  distinct ON (r_ems_id)
+                    r_ems_id as ems,
+                    to_char(now(), 'yyyymmddhh24miss') as dateTime,
             		r01002 as "01002",
                     r01003 as "01003",
                     r01004 as "01004",
-                    r01005 as "01005"
-            FROM    VL_EMS_DTL_ACT
-            WHERE   ems_id = #{ems_id}
-            order by ems_id, date desc
+                    r01005 as "01005",
+                    r01003_status as "01003_status"
+            FROM    make_particulars_actived(#{ems_id})
 
         ]]>
 	</select>

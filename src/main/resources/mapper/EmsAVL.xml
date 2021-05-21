@@ -26,4 +26,22 @@
 		]]>
 	</insert>
 
+	<insert id="INSERT_EMS_AVL_TRANSFER" parameterType="HashMap">
+		<![CDATA[
+			INSERT
+			INTO 	VL_EMS_AVL_TRANSFER
+					(
+						ems_id,
+						emogdesc,
+						date
+					)
+			VALUES
+					(
+						#{ems_id},
+						#{emogdesc},
+						to_timestamp(#{dateTime}, 'yyyymmddhh24miss')
+					)
+		]]>
+	</insert>
+
 </mapper>
