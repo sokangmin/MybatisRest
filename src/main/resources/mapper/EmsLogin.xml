@@ -70,7 +70,7 @@
 				ORDER BY ems_id DESC
 				LIMIT 1
 			) AS info
-			WHERE info.proc_cd not in ('00','02','03','04')
+			WHERE info.proc_cd not in ('00','02','03','04','22','23','24')
         ]]>
 	</select>
 	
@@ -80,8 +80,12 @@
 			SELECT distinct on (ems_id) info.ems_id,
 				epn_id, 
 				case when proc_cd = '02' then '이송종료'
+					 when proc_cd = '03' then '미이송'
 					 when proc_cd = '04' then '이송취소'
-					 else '미이송' end as proc_nm,
+					 when proc_cd = '22' then '재이송종료'
+					 when proc_cd = '23' then '재미이송'
+					 when proc_cd = '24' then '재이송취소'
+					 else '강제종료' end as proc_nm,
 				stat_start_dtime, 
 				stat_end_dtime,
 				COALESCE(r000010,'0') as "R000010",
@@ -103,7 +107,7 @@
         			ORDER BY ems_id DESC
 			) AS info
 			left join vl_ems_predict_hist veph on info.ems_id = veph.ems_id
-			WHERE info.proc_cd in ('02','03','04')
+			--WHERE info.proc_cd in ('02','03','04')
 			order by ems_id desc, veph.id desc
 		]]>
 	</select>
@@ -145,7 +149,7 @@
 				ORDER BY ems_id DESC
 				LIMIT 1
 			) AS info
-			WHERE info.proc_cd not in ('02','03','04')
+			WHERE info.proc_cd not in ('02','03','04','22','23','24')
         ]]>
 	</select>
 
@@ -253,7 +257,7 @@
 		INNER JOIN VL_EMS_EVENT as vee on vee.device_id = vdi.device_id
 		WHERE 	vee.ems_id = #{ems_id}
 			and (vdi.p_camera_id !='' and vdi.p_camera_id is not null)
-			and vee.proc_cd not in ('02','03','04')
+			and vee.proc_cd not in ('02','03','04','22','23','24')
 		union all
 		SELECT 	'defibrillator' as type,
 			vdi.wowza_url||'/'||vee.ems_id||'_'||vdi.d_camera_id as url
@@ -262,7 +266,7 @@
 		INNER JOIN VL_EMS_EVENT as vee on vee.device_id = vdi.device_id
 		WHERE 	vee.ems_id = #{ems_id}
 			and (vdi.d_camera_id !='' and vdi.d_camera_id is not null)
-			and vee.proc_cd not in ('02','03','04')
+			and vee.proc_cd not in ('02','03','04','22','23','24')
 		union all
 		SELECT 	'field' as type,
 			vdi.wowza_url||'/'||vee.ems_id||'_'||vdi.f_camera_id as url
@@ -271,7 +275,7 @@
 		INNER JOIN VL_EMS_EVENT as vee on vee.device_id = vdi.device_id
 		WHERE 	vee.ems_id = #{ems_id}
 			and (vdi.f_camera_id !='' and vdi.f_camera_id is not null)
-			and vee.proc_cd not in ('02','03','04')
+			and vee.proc_cd not in ('02','03','04','22','23','24')
 		]]>
 	</select>
 
