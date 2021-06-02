@@ -140,6 +140,18 @@
 		]]>
     </update>
 
+    <update id="UPDATE_EMS_M_INPUT"
+            parameterType="HashMap">
+        <![CDATA[
+		UPDATE
+		VL_EMS_EVENT
+		SET
+		m_input_yn = #{m_input_yn}
+		WHERE
+		ems_id = #{ems_id}
+		]]>
+    </update>
+
     <insert id="INSERT_EMS_EVENT_HIST" parameterType="HashMap">
         <![CDATA[
 			INSERT
@@ -191,7 +203,8 @@
             SELECT  r01002 as "01002",
                     r01003 as "01003",
                     r01004 as "01004",
-                    r01005 as "01005"
+                    r01005 as "01005",
+                    r01003_status as "01003_status"
             FROM    ermct.add_particulars_actived(#{ems_id})
 
         ]]>
