@@ -114,6 +114,18 @@
 		]]>
     </update>
 
+    <update id="UPDATE_EMS_EVENT3"
+            parameterType="HashMap">
+        <![CDATA[
+		UPDATE
+		VL_EMS_EVENT
+		SET
+		epn_id = #{epn_id}
+		WHERE
+		ems_id = #{ems_id}
+		]]>
+    </update>
+
     <update id="UPDATE_EMS_EVENT"
             parameterType="HashMap">
         <![CDATA[
