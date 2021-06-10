@@ -53,32 +53,85 @@
         ]]>
 	</select>
 
+	<resultMap id="SELECT_CAR_INFO2_DTO" type="HashMap">
+		<id property="ems_id" column="ems_id"/>
+		<result property="epn_id" column="epn_id"/>
+		<result property="emoghira" column="emoghira"/>
+		<result property="R000010" column="R000010"/>
+		<result property="R000020" column="R000020"/>
+		<result property="R000030" column="R000030"/>
+		<result property="R000031" column="R000031"/>
+		<result property="R000032" column="R000032"/>
+		<result property="R000040" column="R000040"/>
+		<collection property="emog_req" javaType="ArrayList" column="ems_id" select="SELECT_EPN_HIRA_RESP"/>
+	</resultMap>
 
 	<select id="SELECT_CAR_INFO2" parameterType="string"
-			resultType="HashMap" fetchSize="1">
+			resultMap="SELECT_CAR_INFO2_DTO" fetchSize="1">
 		<![CDATA[
-			SELECT  ems_id, epn_id
+			SELECT 	distinct on (ems_id)
+					info2.ems_id,
+					COALESCE(epn_id,'') as "epn_id",
+					COALESCE(arrhirano,'') as "emoghira",
+					COALESCE(r000010,'0') as "R000010",
+					COALESCE(r000020,'0') as "R000020",
+					COALESCE(r000030,'0') as "R000030",
+					COALESCE(r000031,'0') as "R000031",
+					COALESCE(r000032,'0') as "R000032",
+					COALESCE(r000040,'0') as "R000040"
 			FROM
 			(
-				SELECT	distinct on (ems_id) ems_id,
-				 		epn_id ,
-				 		proc_cd
-				FROM	VL_EMS_EVENT AS vee
-				INNER JOIN IS_WARDCAR AS car ON car.car_id = vee.car_id
-				WHERE	car.car_no = #{car_no}
-					AND car.use_yn = 'Y'
-				ORDER BY ems_id DESC
-				LIMIT 1
-			) AS info
-			WHERE info.proc_cd not in ('00','02','03','04','22','23','24')
+			  SELECT  distinct on (info.ems_id, epn_id, hist.proc_cd)
+					  info.ems_id,
+					  epn_id,
+					  hist.arrhirano
+				FROM
+				(
+				  SELECT  ems_id,
+						  epn_id
+				  FROM
+				  (
+					SELECT	distinct on (ems_id)
+							ems_id,
+							epn_id ,
+							proc_cd
+					FROM	VL_EMS_EVENT AS vee
+					INNER JOIN IS_WARDCAR AS car ON car.car_id = vee.car_id
+					WHERE	car.car_no = #{car_no}
+						AND car.use_yn = 'Y'
+					ORDER BY ems_id DESC
+					LIMIT 1
+				  ) as inf
+				  WHERE inf.proc_cd not in ('00','02','03','04','22','23','24')
+				) AS info
+				LEFT JOIN (select * from vl_ems_event_hist where proc_cd  in ('12','32')) as hist on info.ems_id = hist.ems_id
+				ORDER BY info.ems_id, epn_id, hist.proc_cd , hist.date desc
+			) AS info2
+			LEFT JOIN vl_ems_predict_hist veph on info2.ems_id = veph.ems_id
+			ORDER BY ems_id desc, veph.id desc
         ]]>
 	</select>
-	
+
+	<resultMap id="SELECT_CAR_INFO3_DTO" type="HashMap">
+		<id property="ems_id" column="ems_id" />
+		<result property="epn_id" column="epn_id" />
+		<result property="stat_start_dtime" column="stat_start_dtime" />
+		<result property="stat_end_dtime" column="stat_end_dtime"/>
+		<result property="proc_nm" column="proc_nm"/>
+		<result property="R000010" column="R000010"/>
+		<result property="R000020" column="R000020"/>
+		<result property="R000030" column="R000030"/>
+		<result property="R000031" column="R000031"/>
+		<result property="R000032" column="R000032"/>
+		<result property="R000040" column="R000040"/>
+		<collection property="emog_req" javaType="ArrayList" column="ems_id" select="SELECT_EPN_HIRA_RESP"/>
+	</resultMap>
+
 	<select id="SELECT_CAR_INFO3" parameterType="string"
-			resultType="HashMap">
+			resultMap="SELECT_CAR_INFO3_DTO">
 		<![CDATA[
 			SELECT distinct on (ems_id) info.ems_id,
-				epn_id, 
+				COALESCE(epn_id,'') as "epn_id",
 				case when proc_cd = '02' then '이송종료'
 					 when proc_cd = '03' then '미이송'
 					 when proc_cd = '04' then '이송취소'
@@ -109,6 +162,19 @@
 			left join vl_ems_predict_hist veph on info.ems_id = veph.ems_id
 			--WHERE info.proc_cd in ('02','03','04')
 			order by ems_id desc, veph.id desc
+		]]>
+	</select>
+
+	<select id="SELECT_EPN_HIRA_RESP" parameterType="string" resultType="HashMap">
+		<![CDATA[
+			SELECT 	distinct on (hirano)
+					hirano as "hiraNo",
+					accept,
+					reason,
+					reasontxt as "reasonTxt"
+			FROM 	VL_EPN_HIRA_RESP vehr
+			WHERE 	ems_id = #{ems_id}
+			ORDER BY hirano, date DESC
 		]]>
 	</select>
 
