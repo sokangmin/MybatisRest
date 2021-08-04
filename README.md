@@ -7,3 +7,9 @@ Rest4Mybatis는 사용자가 MyBatis mapper파일에 정의한 SQL정보를 토�
 - Mybatis, Spring MVC를 기반으로 REST API 서버를 개발하는 경우, Mybatis의 mapper파일이 변경이 될때 마다 Controller, Entity, Repository(dao), Service 등 3~4개의 클래스 및 인터페이스를 수정해야 하고 서비스가 늘어날때 마다 그에 따른 관리 포인트도 늘어남.
 - 개발한 REST API에 대한 문서화 및 테스트 도구 필요.
 
+## 특징
+- Mybatis mapper파일의 각 구문의 명칭은 HTTP Method와 아래와 같이 맵핑됨.<br/>
+
+| Mybatis 구문 | HTTP Method |
+|:--------:|:--------:|
+| SELECT | GET |
