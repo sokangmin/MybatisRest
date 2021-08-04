@@ -10,6 +10,9 @@ Rest4Mybatis는 사용자가 MyBatis mapper파일에 정의한 SQL정보를 토�
 ## 특징
 - Mybatis mapper파일의 각 구문의 명칭은 HTTP Method와 아래와 같이 맵핑됨.<br/>
 
-| Mybatis 구문 | HTTP Method |
-|:--------:|:--------:|
-| SELECT | GET |
+  | Mybatis 구문 | HTTP Method |
+  |:--------:|:--------:|
+  | SELECT | GET |
+  | INSERT | POST |
+  | UPDATE | PUT |
+  | DELETE | DELETE |
