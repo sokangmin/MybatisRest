@@ -68,7 +68,7 @@ Rest4Mybatis는 사용자가 MyBatis mapper파일에 정의한 SQL정보를 토�
 - SQL이 정상적으로 수행시 HTTP 상태코드 200을 리턴하고 에러 발생시 500 및 에러내용을 리턴함.
 - api 문서화 및 테스트 도구 지원
 
-  | select_tableA | insert_tableA |
-  |:--------:|:--------:|
-  | <image src='./image001.png' width='50%' height='50%'/> | <image src='./image001.png' width='50%' height='50%'/> |
+  | select_tableA | insert_tableA | fn_get_cd_nm |
+  |:--------:|:--------:||:--------:|
+  | <image src='./image001.png' width='50%' height='50%'/> | <image src='./image002.png' width='40%' height='40%'/> | <image src='./image003.png' width='50%' height='50%'/> |
   
