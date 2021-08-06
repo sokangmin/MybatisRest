@@ -73,5 +73,10 @@ Rest4Mybatis는 사용자가 MyBatis mapper파일에 정의한 SQL정보를 토�
   | <image src='./image001.png' width='50%' height='50%'/> | <image src='./image002.png' width='40%' height='40%'/> | <image src='./image003.png' width='50%' height='50%'/> |
   
 ## 설치 및 실행
-- 폴더구조
-  
+- 폴더구조<br/>
+  <image src='./image004.png' width='50%' height='50%'/>
+  - MybatisRest-0.0.1-SNAPSHOT.jar : java 클래스, lib, 메타데이터 등이 모여있는 파일
+  - conf : 환경설정 폴더
+    - application.yml : 환경설정파일
+    - mapper : Mybatis mapper 파일이 모여있는 폴더(위치이동 가능함.)
+- application.yml 설정
