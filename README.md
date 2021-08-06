@@ -47,6 +47,7 @@ Rest4Mybatis는 사용자가 MyBatis mapper파일에 정의한 SQL정보를 토�
   <!-- sql -->
 </select>
 ```
+- JDBC를 지원하는 데이터베이스는 모두 적용가능함.
 - Mybatis mapper파일의 각 구문의 명칭은 HTTP Method와 아래와 같이 맵핑됨.<br/>
 
   | Mybatis 구문 | HTTP Method |
@@ -55,7 +56,6 @@ Rest4Mybatis는 사용자가 MyBatis mapper파일에 정의한 SQL정보를 토�
   | INSERT | POST |
   | UPDATE | PUT |
   | DELETE | DELETE |
-
 - Mybatis mapper파일의 namespace와 id를 사용하여 REST API URL로 활용.<br/>
   각 구문의 명칭과 id의 접두사가 일치하는 경우 '접두사_'는 url에서 제거됨.
 - Mybatis mapper파일의 select, delete 구문의 parameter는 HTTP URL의 쿼리스트링으로 맵핑됨.</br>
