@@ -47,7 +47,7 @@ Rest4Mybatis는 사용자가 MyBatis mapper파일에 정의한 SQL정보를 토�
   <!-- sql -->
 </select>
 ```
-- JDBC를 지원하는 데이터베이스는 모두 적용가능함.
+- JDBC를 지원하는 데이터베이스는 모두 적용하고 Mybatis에서 제공하는 기능들은 대부분 지원함.
 - Mybatis mapper파일의 각 구문의 명칭은 HTTP Method와 아래와 같이 맵핑됨.<br/>
 
   | Mybatis 구문 | HTTP Method |
