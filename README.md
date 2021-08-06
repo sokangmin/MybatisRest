@@ -65,7 +65,7 @@ Rest4Mybatis는 사용자가 MyBatis mapper파일에 정의한 SQL정보를 토�
   fetchSize를 1로 하면 json으로 리턴함.
 - Insert 실행 성공시, 등록한 keyProperty에 해당하는 값을 리턴함.
   update, delete 실행시 {"result": true} 리턴함.
-- SQL이 정상적으로 수행시 HTTP 상태코드 200을 리턴하고 에러 발생시 500 및 에러내용을 리턴함.
+- SQL이 정상적으로 수행시 HTTP 상태코드 200, 잘못된 요청일 경우 400번대, 에러 발생시 500 및 에러내용을 리턴함.
 - api 문서화 및 테스트 도구 지원
 
   | select_tableA | insert_tableA | fn_get_cd_nm |
