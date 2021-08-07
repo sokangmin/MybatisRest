@@ -80,20 +80,20 @@ Rest4Mybatis는 사용자가 MyBatis mapper파일에 정의한 SQL정보를 토�
     - application.yml : SpringBoot 환경설정파일
     - mapper : Mybatis mapper 파일이 모여있는 폴더(위치이동 가능함.)
 - application.yml 설정
-```yaml
-# http 서버 포트 정보
-server:
-  port: 8080
+  ```yaml
+  # http 서버 포트 정보
+  server:
+    port: 8080
 
-# Database 정보
-spring:
-  datasource:
-    driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/postgres
-    username: ermct
-    password: ermct00
+  # Database 정보
+  spring:
+    datasource:
+      driver-class-name: org.postgresql.Driver
+      url: jdbc:postgresql://localhost:5432/postgres
+      username: ermct
+      password: ermct00
     
-# Mybatis     
-mybatis:
-  mapper-locations: classpath:/mapper/**/*.xml
-```
+  # Mybatis     
+  mybatis:
+    mapper-locations: classpath:/mapper/**/*.xml
+  ```
