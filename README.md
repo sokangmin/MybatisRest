@@ -70,7 +70,7 @@ Rest4Mybatis는 사용자가 MyBatis mapper파일에 정의한 SQL정보를 토�
 
   | select_tableA | insert_tableA | fn_get_cd_nm |
   |:--------:|:--------:|:--------:|
-  | <image src='./image001.png' width='50%' height='50%'/> | <image src='./image002.png' width='40%' height='40%'/> | <image src='./image003.png' width='50%' height='50%'/> |
+  | <image src='./image001.png?raw=true' width='50%' height='50%'/> | <image src='./image002.png' width='40%' height='40%'/> | <image src='./image003.png' width='50%' height='50%'/> |
   
 ## 설치 및 실행
 - 폴더구조<br/>
