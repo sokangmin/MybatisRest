@@ -96,6 +96,8 @@ Rest4Mybatis는 사용자가 MyBatis mapper파일에 정의한 SQL정보를 토�
   # Mybatis     
   mybatis:
     mapper-locations: classpath:/mapper/**/*.xml
+    
+  # 그외 설정정보는 SpringBoot 참고
   ```
 - 실행방법
   - java 1.8 이상 필요.
