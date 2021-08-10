@@ -100,4 +100,5 @@ Rest4Mybatis는 사용자가 MyBatis mapper파일에 정의한 SQL정보를 토�
 - 실행방법
   - java 1.8 이상 필요.
   - java -jar MybatisRest-0.0.1-SNAPSHOT.jar 로 실행.
+  - http://{서버ip}:{서버port}/docs 로 접속해서 api 테스트화면이 나타나면 정상. 
 ## 활용사례
