@@ -8,9 +8,8 @@ Rest4Mybatis는 사용자가 MyBatis mapper파일에 정의한 SQL정보를 토�
 - 개발한 REST API에 대한 문서화 및 테스트 도구 필요.
 
 ## 특징
-- 예제 Mapper 파일
 ```xml
-<!-- mapper 파일 예제 -->
+<!-- Mybatis Mapper 파일 예제 -->
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd">
 <mapper namespace="mybatis.mapper.test">
