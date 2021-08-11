@@ -60,7 +60,7 @@ Rest4Mybatis는 사용자가 MyBatis mapper파일에 정의한 SQL정보를 토�
   각 구문의 명칭과 id의 접두사가 일치하는 경우 '접두사_'는 url에서 제거됨.
 - Mybatis mapper파일의 select, delete 구문의 parameter는 HTTP URL의 쿼리스트링으로 맵핑됨.</br>
   insert, update 구문의 parameter는 HTTP의 body문으로 맵핑이 되고 json으로 작성. (Content-Type: application/json; charset=utf-8)
-- parameterType, resultType 등에 사용자정의 클래스는 사용 안됨. 사용자정의 클래스는 HashMap 또는 사용자정의 ResultMap 으로 수정해서 사용해야 함.
+- parameterType, resultType 등에 사용자정의 클래스는 사용 안됨. 사용자정의 클래스는 HashMap 또는 [사용자정의 ResultMap](./image006.png?raw=true) 으로 수정해서 사용해야 함.
 - Select 구문은 default로 json array로 리턴함.
   fetchSize를 1로 하면 json으로 리턴함.
 - Insert 실행 성공시, 등록한 keyProperty에 해당하는 값을 리턴함.
